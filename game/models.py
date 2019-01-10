@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Hero(models.model):
+class Hero(models.Model):
     name = models.CharField()
     level = models.IntegerField()
     experience = models.IntegerField()
@@ -13,4 +13,19 @@ class Hero(models.model):
     health = models.IntegerField()
 
     def __str__(self);
-        return self.name
+        return "Hero " + self.name
+
+
+class Location(models.Model):
+    name = models.CharField()
+    
+    def __str__(self);
+        return "Location " + self.name
+
+
+class Action(models.Model):
+    name = models.CharField()
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+
+    def __str__(self);
+        return "Action " + self.name
