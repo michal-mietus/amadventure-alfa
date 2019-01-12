@@ -2,11 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Hero(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20)
-    level = models.IntegerField()
-    experience = models.IntegerField()
+class Statistics(models.Model):
     strength = models.IntegerField()
     intelligence = models.IntegerField()
     agility = models.IntegerField()
@@ -14,8 +10,26 @@ class Hero(models.Model):
     critic_chance = models.IntegerField()
     health = models.IntegerField()
 
+    class Meta:
+        abstract = True
+ 
+
+class Hero(Statistics):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20)
+    level = models.IntegerField()
+    experience = models.IntegerField()
+    
     def __str__(self):
         return "Hero " + self.name
+
+
+class Item(Statistics):
+    name = models.CharField(max_length=20)
+    minimal_level = models.IntegerField()
+    
+    def __str__(self):
+        return "Item " + self.name
 
 
 class Location(models.Model):
