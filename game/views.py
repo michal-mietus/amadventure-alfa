@@ -18,4 +18,6 @@ class CreateHeroView(FormView):
         return reverse('game:main')
 
     def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
         return super().form_valid(form)
