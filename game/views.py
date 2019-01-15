@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.views.generic.edit import View, FormView
 from .forms import HeroForm
 
@@ -13,7 +13,9 @@ class MainView(View):
 class CreateHeroView(FormView):
     template_name = 'game/create_hero.html'
     form_class = HeroForm
-    success_url = '/'
+
+    def get_success_url(self):
+        return reverse('game:main')
 
     def form_valid(self, form):
-        return render(request, 'game/index.html')
+        return super().form_valid(form)
