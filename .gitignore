@@ -4,3 +4,6 @@
 *__pychache__*
 htmlcov/
 .coverage
+game/__pycache__/
+amadventure/__pycache__/
+
