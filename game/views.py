@@ -14,10 +14,8 @@ class CreateHeroView(FormView):
     template_name = 'game/create_hero.html'
     form_class = HeroForm
 
-    def get_success_url():
+    def get_success_url(self):
         return reverse('game:main')
 
     def form_valid(self, form):
-
         return super().form_valid(form)
-        #return render(request, 'game/index.html')
