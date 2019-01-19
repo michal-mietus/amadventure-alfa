@@ -8,3 +8,4 @@ game/__pycache__/
 amadventure/__pycache__/
 
 .vscode/
+.coveragerc
