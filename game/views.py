@@ -1,9 +1,12 @@
 from django.shortcuts import render, reverse
 from django.views.generic.edit import View, FormView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from .forms import HeroCreateForm, HeroUpgradeForm
 from .models import Hero
 
 
+@method_decorator(login_required, name='dispatch')
 class MainView(View):
     template_name = 'game/main.html'
 
@@ -11,6 +14,7 @@ class MainView(View):
         return render(request, self.template_name)
 
 
+@method_decorator(login_required, name='dispatch')
 class HeroCreateView(FormView):
     template_name = 'game/create_hero.html'
     form_class = HeroCreateForm
@@ -24,6 +28,7 @@ class HeroCreateView(FormView):
         return reverse('game:main')
 
 
+@method_decorator(login_required, name='dispatch')
 class HeroUpgradeView(FormView):
     template_name = 'game/upgrade_hero.html'
     form_class = HeroUpgradeForm
@@ -40,6 +45,7 @@ class HeroUpgradeView(FormView):
         return initial
 
     def form_valid(self, form):
+        # TODO in saving form is error
         form.save()
         return super().form_valid(form)
 

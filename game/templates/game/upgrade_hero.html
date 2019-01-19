@@ -1,5 +1,11 @@
-<form method="POST" action="{% url 'game:hero_upgrade' %}">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Upgrade">
-</form>
+{% extends 'base.html' %}
+
+{% block title %}Upgrade hero{% endblock %}
+
+{% block content %}
+    <form method="POST" action="{% url 'game:hero_upgrade' %}">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Upgrade">
+    </form>
+{% endblock %}
