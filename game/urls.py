@@ -6,5 +6,7 @@ app_name = 'game'
 
 urlpatterns = [
     path('', views.MainView.as_view(), name='main'),
-    path('create_hero/', views.CreateHeroView.as_view(), name='create_hero'),
+    path('hero_create/', views.HeroCreateView.as_view(), name='hero_create'),
+    path('hero_upgrade/', views.HeroUpgradeView.as_view(), name='hero_upgrade'),
+    
 ]
