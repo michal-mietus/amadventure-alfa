@@ -2,12 +2,13 @@ from django.forms import ModelForm
 from . import models
 
 
-class HeroForm(ModelForm):
+class HeroCreateForm(ModelForm):
     class Meta:
         model = models.Hero
-        exclude = [
-            'user', 'level', 'experience',
-            'dodge_chance', 'critic_chance'
-            ]
+        fields = ['name', 'strength', 'intelligence', 'agility', 'vitality']
 
-    field_order = ['name', 'strength', 'intelligence', 'agility', 'health']
+
+class HeroUpgradeForm(ModelForm):
+    class Meta:
+        model = models.Hero
+        fields = ['strength', 'intelligence', 'agility', 'vitality']
