@@ -7,3 +7,5 @@ htmlcov/
 game/__pycache__/
 amadventure/__pycache__/
 
+.vscode/settings.json
+.vscode/launch.json
