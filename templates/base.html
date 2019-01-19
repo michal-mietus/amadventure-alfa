@@ -10,9 +10,15 @@
     <body>
         <nav>
             <ul>
-                <li><a href="">Home</a></li>
-                <li><a href="">Hero</a></li>
-                <li><a href="">Locations</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="">Home</a></li>
+                    <li><a href="">Hero</a></li>
+                    <li><a href="">Locations</a></li>
+                    <li><a href="{% url 'usersystem:sign_out' %}">Sign out</a></li>
+                {% else %}
+                    <li><a href="{% url 'usersystem:sign_in' %}">Sign in</a></li>
+                    <li><a href="{% url 'usersystem:sign_up' %}">Sign up</a></li>
+                {% endif %}
             </ul>
         </nav>
         <div class="main">
