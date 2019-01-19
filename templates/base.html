@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Amadventure - {% block title %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li><a href="">Home</a></li>
+                <li><a href="">Hero</a></li>
+                <li><a href="">Locations</a></li>
+            </ul>
+        </nav>
+        <div class="main">
+            {% block content %}{% endblock %}
+        </div>
+        <footer>
+            Created by: 
+        </footer>
+    </body>
+</html>
