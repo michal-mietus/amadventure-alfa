@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse
-from django.views.generic.edit import View, FormView
+from django.views.generic.edit import View, FormView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import HeroCreateForm, HeroUpgradeForm
@@ -20,7 +20,7 @@ class HeroCreateView(FormView):
     form_class = HeroCreateForm
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        form.instance.owner = self.request.user
         form.save()
         return super().form_valid(form)
 
@@ -29,14 +29,20 @@ class HeroCreateView(FormView):
 
 
 @method_decorator(login_required, name='dispatch')
-class HeroUpgradeView(FormView):
+class HeroUpgradeView(UpdateView):
     template_name = 'game/upgrade_hero.html'
     form_class = HeroUpgradeForm
+    model = Hero
+
+    def get_object(self, queryset=None):
+        # TODO how get current hero (if we would have more than one to choose)?
+        obj = Hero.objects.get(owner=self.request.user)
+        return obj
 
     def get_initial(self):
         initial = super(HeroUpgradeView, self).get_initial()
         # TODO how get current hero (if we would have more than one to choose)?
-        hero = Hero.objects.get(user=self.request.user)
+        hero = Hero.objects.get(owner=self.request.user)
         initial['strength'] = hero.strength
         initial['intelligence'] = hero.intelligence
         initial['agility'] = hero.agility
@@ -45,7 +51,6 @@ class HeroUpgradeView(FormView):
         return initial
 
     def form_valid(self, form):
-        # TODO in saving form is error
         form.save()
         return super().form_valid(form)
 

@@ -12,8 +12,8 @@ class Statistics(models.Model):
     magic_attack = models.IntegerField(default=0)  # 3.0 * intelligence
     magic_resist = models.IntegerField(default=0)  # 1.0 * intelligence
     agility = models.IntegerField()
-    dodge_chance = models.IntegerField(default=0)  # 0.005 * agility
-    critic_chance = models.IntegerField(default=0)  # 0.0025 * agility
+    dodge_chance = models.FloatField(default=0)  # 0.005 * agility
+    critic_chance = models.FloatField(default=0)  # 0.0025 * agility
     vitality = models.IntegerField()
     health = models.IntegerField(default=0)  # 5.0 * vitality
 
@@ -22,7 +22,7 @@ class Statistics(models.Model):
 
 
 class Hero(Statistics):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=20)
     level = models.IntegerField(default=1)
     experience = models.IntegerField(default=0)
@@ -48,23 +48,27 @@ class Hero(Statistics):
             self.vitality += item.agility
 
 
-    def calculate_new_stats(self):
-        self.defense = self.strength * 1.0
-        self.physical_attack = self.strength * 3.0
-        self.magic_attack = self.intelligence * 3.0
-        self.magic_resist = self.intelligence * 1.0
-        self.dodge_chance = self.agility * 0.0025
-        self.critic_chance = self.agility * 0.005
-        self.health = self.vitality * 5
+def add_item_stats():
+    hero = Hero.objects.all()
+    #for item in
 
+
+def calculate_stats(instance):
+    hero = Hero.objects.filter(pk=instance.pk)
+    hero.update(
+        defense = instance.strength * 1.0,
+        physical_attack = instance.strength * 3.0,
+        magic_attack = instance.intelligence * 3.0,
+        magic_resist = instance.intelligence * 1.0,
+        dodge_chance = instance.agility * 0.0025,
+        critic_chance = instance.agility * 0.005,
+        health = instance.vitality * 5,
+    )
 
 @receiver(post_save, sender=Hero)
 def update_statistics(sender, instance, *args, **kwargs):
-    instance.remove_item_stats()
-    instance.calculate_new_stats()
-    instance.add_item_stats()
-    # maximum recursion depth
-    # instance.save()
+    # instead of saving instance use update
+    calculate_stats(instance)
 
 
 class Item(Statistics):
