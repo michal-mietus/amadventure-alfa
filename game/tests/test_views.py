@@ -77,3 +77,28 @@ class TestHeroCreateView(UserSetUp):
         self.assertEqual(response.status_code, 200)
 
     
+class TestHeroUpgradeView(UserSetUp):
+    def setUp(self):
+        super().setUp()
+        self.app_name = 'game'
+        self.url_name = 'hero_upgrade'
+        self.url = self.app_name + ':' + self.url_name
+        self.hero = Hero.objects.create(
+            owner=self.user,
+            name='hero',
+            level = 10,
+            experience = 10,
+            strength = 10,
+            intelligence = 10,
+            agility = 10,
+            vitality = 10,
+        )
+    
+    def test_prevent_logged_user_access_upgrade_view(self):
+        response = self.client.get(reverse(self.url))
+        self.assertRedirects(response, '/user/sign_in/?next=/hero_upgrade/')
+
+    def test_allow_logged_user_access_upgrade_view(self):
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.get(reverse(self.url))
+        self.assertTemplateUsed('upgrade_hero.html')
