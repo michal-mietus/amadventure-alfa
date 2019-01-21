@@ -1,5 +1,6 @@
 from django.shortcuts import render, reverse
-from django.views.generic.edit import View, FormView, UpdateView
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import HeroCreateForm, HeroUpgradeForm
@@ -7,11 +8,8 @@ from .models import Hero
 
 
 @method_decorator(login_required, name='dispatch')
-class MainView(View):
+class MainView(TemplateView):
     template_name = 'game/main.html'
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
 
 
 @method_decorator(login_required, name='dispatch')
