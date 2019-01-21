@@ -2,20 +2,21 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator
 
 
 class Statistics(models.Model):
-    strength = models.IntegerField(default=0)
-    defense = models.IntegerField(default=0)  # 1.0 * strength
-    physical_attack = models.IntegerField(default=0)  # 3.0 * strength
-    intelligence = models.IntegerField(default=0)
-    magic_attack = models.IntegerField(default=0)  # 3.0 * intelligence
-    magic_resist = models.IntegerField(default=0)  # 1.0 * intelligence
-    agility = models.IntegerField(default=0)
+    strength = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
+    defense = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 1.0 * strength
+    physical_attack = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 3.0 * strength
+    intelligence = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
+    magic_attack = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 3.0 * intelligence
+    magic_resist = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 1.0 * intelligence
+    agility = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
     dodge_chance = models.FloatField(default=0)  # 0.005 * agility
     critic_chance = models.FloatField(default=0)  # 0.0025 * agility
-    vitality = models.IntegerField(default=0)
-    health = models.IntegerField(default=0)  # 5.0 * vitality
+    vitality = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
+    health = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 5.0 * vitality
 
     class Meta:
         abstract = True
