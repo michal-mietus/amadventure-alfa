@@ -4,11 +4,13 @@
 <html>
     <head>
         <title>Amadventure - {% block title %}{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
+        {% block styles %}{% endblock %}
     </head>
     <body>
-        <nav>
+      <nav>
             <ul>
                 {% if user.is_authenticated %}
                     <li><a href="">Home</a></li>
@@ -24,6 +26,7 @@
         <div class="main">
             {% block content %}{% endblock %}
         </div>
+        {% block scripts %}{% endblock %}
         <footer>
             Created by: 
         </footer>
