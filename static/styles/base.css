@@ -1,0 +1,13 @@
+
+nav {
+    background-color: #1A9A8B;
+}
+
+nav ul li a {
+    color: #8C2425;
+    text-decoration: none;
+    margin: 0px;
+}
+nav ul li a:hover {
+    background-color: #E9262C;
+}
