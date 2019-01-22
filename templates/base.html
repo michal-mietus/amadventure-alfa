@@ -4,22 +4,29 @@
 <html>
     <head>
         <title>Amadventure - {% block title %}{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
+        {% block scripts %}{% endblock %}
+        {% block styles %}{% endblock %}
     </head>
     <body>
-        <nav>
-            <ul>
-                <li><a href="">Home</a></li>
-                <li><a href="">Hero</a></li>
-                <li><a href="">Locations</a></li>
-            </ul>
-        </nav>
-        <div class="main">
-            {% block content %}{% endblock %}
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="">Home</a></li>
+                    <li><a href="">Hero</a></li>
+                    <li><a href="">Locations</a></li>
+                </ul>
+            </nav>
+            <div class="main">
+                <div class="content">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+            <footer>
+                Created by: 
+            </footer>
         </div>
-        <footer>
-            Created by: 
-        </footer>
     </body>
 </html>
