@@ -1,35 +1,20 @@
 form {
+    width: 90%;
+    margin: 30px auto;
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 5px [start] 1fr [end] 5px;
+    grid-template-columns: 0.2fr 1fr;
+    grid-gap: 16px
 }
 
-#id_name label[for="id_name"]{
-    grid-row: 1 / 2;
-    grid-column: start / end;
+label {
+    grid-column: 1 / 2;
+}
+ 
+input, button {
+    grid-column: 2 / 3;
 }
 
-#id_strength /*label[for=id_strength]*/{
-    grid-row: 2 / 3;
-    grid-column: start / end;
-}
-
-#id_intelligence /*label[for=id_intelligence]*/{
-    grid-row: 3 / 4;
-    grid-column: start / end;
-}
-
-#id_agility /*label[for=id_agility]*/{
-    grid-row: 4 / 5;
-    grid-column: start / end;
-}
-
-#id_vitality /*label[for=id_vitality]*/{
-    grid-row: 5 / 6;
-    grid-column: start / end;
-}
-
-input[type="submit"] {
-    grid-row: 6 / 7;
-    grid-column: start / end;
+input[type="text"], input[type="submit"] {
+    min-width: 160px;
+    width: 30%;
 }
