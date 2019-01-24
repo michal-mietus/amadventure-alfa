@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Create hero{% endblock %}
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/create_hero.css' %}">
+{% endblock %}
 
 {% block content %}
     <form method="POST" action="{% url 'game:hero_create' %}">
