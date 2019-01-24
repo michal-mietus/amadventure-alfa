@@ -28,8 +28,9 @@ class HeroCreateView(FormView):
 
 
 # why decorator works but overriding method and super() call doesnt
-@method_decorator(hero_created_require, name='dispatch')
+# decorator order is important!
 @method_decorator(login_required, name='dispatch')
+@method_decorator(hero_created_require, name='dispatch')
 class HeroUpgradeView(UpdateView):
     template_name = 'game/upgrade_hero.html'
     form_class = HeroUpgradeForm
