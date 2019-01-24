@@ -1,10 +1,11 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import HeroCreateForm, HeroUpgradeForm
 from .models import Hero
+from .decorators import hero_created_require
 
 
 @method_decorator(login_required, name='dispatch')
@@ -26,7 +27,10 @@ class HeroCreateView(FormView):
         return reverse('game:main')
 
 
+# why decorator works but overriding method and super() call doesnt
+# decorator order is important!
 @method_decorator(login_required, name='dispatch')
+@method_decorator(hero_created_require, name='dispatch')
 class HeroUpgradeView(UpdateView):
     template_name = 'game/upgrade_hero.html'
     form_class = HeroUpgradeForm
@@ -45,7 +49,6 @@ class HeroUpgradeView(UpdateView):
         initial['intelligence'] = hero.intelligence
         initial['agility'] = hero.agility
         initial['vitality'] = hero.vitality
-
         return initial
 
     def form_valid(self, form):

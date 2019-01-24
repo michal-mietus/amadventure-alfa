@@ -1,6 +1,6 @@
 *.sqlite3
 *.pyc
-*pyc
+*.jpg
 *__pychache__*
 htmlcov/
 .coverage
