@@ -1,6 +1,10 @@
+body {
+    margin: 0;
+}
+
 .container {
     display: grid;
-    grid-template-rows: [logo] 0.5fr [nav] 0.5fr [main] 4fr [footer] 1fr [end-footer];
+    grid-template-rows: [logo] 0.5fr [nav] 0.5fr [main] 4fr [footer] 0.3fr [end-footer];
     grid-template-columns: 10px [main] 1fr [end-main] 10px;
     max-width: 1000px;
     margin: 0 auto;
