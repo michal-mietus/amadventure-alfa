@@ -9,31 +9,26 @@
 {% block content %}
     <form method="POST" action="{% url 'game:hero_create' %}">
         {{ form.non_field_errors }}
-        <div class="fieldWrapper">
+            {% csrf_token %}
             {{ form.name.errors }}
             <label id="name_label_id" for="{{ form.name.id_for_label }}">Hero name:</label>
             {{ form.name }}
-        </div>
-        <div class="fieldWrapper">
+
             {{ form.strength.errors }}
             <label id="strength_label_id" for="{{ form.strength.id_for_label }}">Strength:</label>
             {{ form.strength }}
-        </div>
-        <div class="fieldWrapper">
+
             {{ form.intelligence.errors }}
             <label id="intelligence_label_id" for="{{ form.intelligence.id_for_label }}">Intelligence:</label>
             {{ form.intelligence }}
-        </div>    
-        <div class="fieldWrapper">
-                {{ form.agility.errors }}
-                <label id="agility_label_id" for="{{ form.agility.id_for_label }}">Agility:</label>
-                {{ form.agility }}
-        </div>
-        <div class="fieldWrapper">
+
+            {{ form.agility.errors }}
+            <label id="agility_label_id" for="{{ form.agility.id_for_label }}">Agility:</label>
+            {{ form.agility }}
+
             {{ form.vitality.errors }}
             <label id="vitality_label_id" for="{{ form.vitality.id_for_label }}">Vitality:</label>
             {{ form.vitality }}
-        </div>
                   
         <input type="submit" value="Create">
     </form>
