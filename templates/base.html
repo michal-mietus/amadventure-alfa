@@ -6,8 +6,8 @@
         <title>Amadventure - {% block title %}{% endblock %}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        {% block styles %}{% endblock %}
         <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
+        {% block styles %}{% endblock %}
     </head>
     <body>
         <div class="container">
@@ -17,13 +17,13 @@
             <nav>
                 <ul>
                     {% if user.is_authenticated %}
-                        <li><a href="">Home</a></li>
-                        <li><a href="">Hero</a></li>
-                        <li><a href="">Locations</a></li>
-                        <li><a href="{% url 'usersystem:sign_out' %}">Sign out</a></li>
+                        <li class="home"><a href="">Home</a></li>
+                        <li class="hero"><a href="">Hero</a></li>
+                        <li class="locations"><a href="">Locations</a></li>
+                        <li class="sign-out"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></li>
                     {% else %}
-                        <li><a href="{% url 'usersystem:sign_in' %}">Sign in</a></li>
-                        <li><a href="{% url 'usersystem:sign_up' %}">Sign up</a></li>
+                        <li class="sign-in"><a href="{% url 'usersystem:sign_in' %}">Sign in</a></li>
+                        <li class="sign-up"><a href="{% url 'usersystem:sign_up' %}">Sign up</a></li>
                     {% endif %}
                 </ul>
             </nav>
