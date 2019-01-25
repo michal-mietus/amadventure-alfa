@@ -26,14 +26,26 @@ nav {
     display: grid;
     grid-template-columns: 0.25fr 0.25fr 0.25fr 0.25fr;
     grid-auto-rows: 1fr;
+    text-align: center;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 1.1em;
 }
 
-nav ul li a {
+nav div {
+    display:block;
+    width:100%;
+    height:100%;
+}
+
+nav div a {
     color: #8C2425;
     text-decoration: none;
-    margin: 0px;
+    margin: 0 auto;
+    display: block;
+    width: 100%;
+    height: 100%;
 }
-nav ul li a:hover {
+nav div a:hover {
     background-color: #E9262C;
 }
 
@@ -42,6 +54,14 @@ main {
     grid-row: main / footer;
     grid-column: main / end-main;
     background-color: #cecece;
+    display: grid;
+    grid-template-columns: 0.1fr [content] 0.8fr [end-content] 0.1fr;
+    grid-template-rows: 1fr;
+}
+
+.content {
+    grid-column: content / end-content;
+    grid-row: 1 / 2;
 }
 
 footer {
