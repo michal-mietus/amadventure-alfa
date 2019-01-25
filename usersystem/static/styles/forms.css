@@ -1,0 +1,19 @@
+form {
+    margin: 30px auto 30px auto;
+    display: grid;
+    grid-template-columns: 0.2fr 1fr;
+    grid-gap: 16px
+}
+
+label {
+    grid-column: 1 / 2;
+}
+ 
+input, button {
+    grid-column: 2 / 3;
+}
+
+input[type="text"], input[type="submit"] {
+    min-width: 160px;
+    width: 30%;
+}

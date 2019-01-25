@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Sign up{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/forms.css' %}">
+{% endblock %}
 
 {% block content %}
     <form method="POST" action="{% url 'usersystem:sign_in' %}">

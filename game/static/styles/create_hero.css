@@ -1,6 +1,5 @@
 form {
-    width: 90%;
-    margin: 30px auto;
+    margin: 30px auto 30px auto;
     display: grid;
     grid-template-columns: 0.2fr 1fr;
     grid-gap: 16px
