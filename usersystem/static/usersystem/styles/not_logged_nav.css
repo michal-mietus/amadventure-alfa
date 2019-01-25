@@ -1,0 +1,9 @@
+/* not logged nav bar view */
+
+nav ul li .sign-in {
+    grid-column: 1 / 3;
+}
+
+nav ul li .sign-up {
+    grid-column: 3 / 5;
+}

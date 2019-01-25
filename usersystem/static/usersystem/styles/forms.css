@@ -1,7 +1,6 @@
 form {
-    margin: 30px auto 30px auto;
     display: grid;
-    grid-template-columns: 0.2fr 1fr;
+    grid-template-columns: 0.2fr 1fr 0.2fr;
     grid-gap: 16px
 }
 
@@ -13,7 +12,7 @@ input, button {
     grid-column: 2 / 3;
 }
 
-input[type="text"], input[type="submit"] {
+input[type="submit"] {
     min-width: 160px;
     width: 30%;
 }
