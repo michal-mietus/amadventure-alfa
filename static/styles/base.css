@@ -5,8 +5,7 @@ body {
 .container {
     display: grid;
     grid-template-rows: [logo] 0.5fr [nav] 0.5fr [main] 4fr [footer] 0.3fr [end-footer];
-    grid-template-columns: 10px [main] 1fr [end-main] 10px;
-    max-width: 1000px;
+    grid-template-columns: [main] 1fr [end-main];
     margin: 0 auto;
 }
 
@@ -19,8 +18,7 @@ body {
 nav {
     grid-row: nav / main;
     grid-column: main / end-main;
-    background-color: #1A9A8B;
-    width: 100%;
+    background-color: #1c7773;
 }
 
 nav ul li a {
@@ -36,10 +34,12 @@ main {
     grid-row: main / footer;
     grid-column: main / end-main;
     width: 100%;
+    padding: 30px;
 }
 
 footer {
     grid-row: footer / end-footer;
     grid-column: main / end-main;
     width: 100%;
+    background-color: #1c7773;
 }
