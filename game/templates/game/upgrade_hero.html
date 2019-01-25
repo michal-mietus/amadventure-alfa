@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Upgrade hero{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static '/game/styles/hero_form.css' %}">
+{% endblock %}
+
 
 {% block content %}
     <form method="POST" action="{% url 'game:hero_upgrade' %}">
