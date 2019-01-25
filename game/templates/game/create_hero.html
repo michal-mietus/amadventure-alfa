@@ -9,7 +9,7 @@
 {% block content %}
     <form method="POST" action="{% url 'game:hero_create' %}">
         {{ form.non_field_errors }}
-            
+            {% csrf_token %}
             {{ form.name.errors }}
             <label id="name_label_id" for="{{ form.name.id_for_label }}">Hero name:</label>
             {{ form.name }}
