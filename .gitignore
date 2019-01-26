@@ -6,6 +6,7 @@
 .coverage
 .coveragerc
 
+.pytest_cache/
 htmlcov/
 game/__pycache__/
 amadventure/__pycache__/
