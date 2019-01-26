@@ -1,9 +1,11 @@
 /* not logged nav bar view */
 
-nav ul li .sign-in {
+nav .sign-in {
     grid-column: 1 / 3;
+    grid-row: 1 / 2;
 }
 
-nav ul li .sign-up {
+nav .sign-up {
     grid-column: 3 / 5;
+    grid-row: 1 / 2;
 }

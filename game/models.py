@@ -7,11 +7,11 @@ from django.core.validators import MinValueValidator
 
 class Statistics(models.Model):
     strength = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
-    defense = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 1.0 * strength
-    physical_attack = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 3.0 * strength
+    defense = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 0.5 * strength
+    physical_attack = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 1.5 * strength
     intelligence = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
-    magic_attack = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 3.0 * intelligence
-    magic_resist = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 1.0 * intelligence
+    magic_attack = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 1.5 * intelligence
+    magic_resist = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 0.5 * intelligence
     agility = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
     dodge_chance = models.FloatField(default=0)  # 0.005 * agility
     critic_chance = models.FloatField(default=0)  # 0.0025 * agility
@@ -31,11 +31,53 @@ class Hero(Statistics):
     def __str__(self):
         repr = "Hero " + self.name
         return repr
+    
+    def fight(self, enemy):
+        attacker = Fighter(self, enemy)
+        defender = Fighter(enemy, self)
+
+        while (attacker.health and defender.health) > 0:
+            attacker.hit(defender)
+            defender.hit(attacker)
+        
+        return self.choose_winner(attacker, defender)
+        
+    def choose_winner(self, attacker, defender):
+        if attacker.health > defender.health:
+            str = "Attacker won"
+        else:
+            str = "Defender won"
+        return str
+
+
+class Fighter:
+    def __init__(self, hero, enemy):
+        self.health = hero.health
+        self.physical_damage = self.calculate_physical_damage(hero, enemy)
+        self.magical_damage = self.calculate_magical_damage(hero, enemy)
+
+    def hit_enemy(self, enemy):
+        enemy.health -= self.physical_damage + self.magical_damage
+
+    def calculate_physical_damage(self, hero, enemy):
+        physical_damage = hero.physical_attack / enemy.defense
+        return physical_damage
+
+    def calculate_magical_damage(self, hero, enemy):
+        magical_damage = hero.magic_attack / enemy.magic_resist
+        return magical_damage
+
+
+
+@receiver(post_save, sender=Hero)
+def update_statistics(sender, instance, *args, **kwargs):
+    # instead of saving instance use update
+    remove_item_stats(instance)
+    calculate_stats(instance)
+    add_item_stats(instance)
 
 
 # TODO reduce code in these functions
-
-
 # this code is really ugly !
 def remove_item_stats(instance):
     hero = Hero.objects.get(pk=instance.pk)
@@ -56,6 +98,19 @@ def remove_item_stats(instance):
         )
 
 
+def calculate_stats(instance):
+    hero = Hero.objects.filter(pk=instance.pk)
+    hero.update(
+        defense = instance.strength * 0.5,
+        physical_attack = instance.strength * 1.5,
+        magic_attack = instance.intelligence * 1.5,
+        magic_resist = instance.intelligence * 0.5,
+        dodge_chance = instance.agility * 0.0025,
+        critic_chance = instance.agility * 0.005,
+        health = instance.vitality * 5,
+    )
+
+
 # this code is really ugly !
 def add_item_stats(instance):
     hero = Hero.objects.get(pk=instance.pk)  # TODO why without index return queryset?
@@ -74,26 +129,6 @@ def add_item_stats(instance):
             vitality = hero.vitality + item.vitality,
             health = hero.health + item.health,
         )
-
-
-def calculate_stats(instance):
-    hero = Hero.objects.filter(pk=instance.pk)
-    hero.update(
-        defense = instance.strength * 1.0,
-        physical_attack = instance.strength * 3.0,
-        magic_attack = instance.intelligence * 3.0,
-        magic_resist = instance.intelligence * 1.0,
-        dodge_chance = instance.agility * 0.0025,
-        critic_chance = instance.agility * 0.005,
-        health = instance.vitality * 5,
-    )
-
-@receiver(post_save, sender=Hero)
-def update_statistics(sender, instance, *args, **kwargs):
-    # instead of saving instance use update
-    remove_item_stats(instance)
-    calculate_stats(instance)
-    add_item_stats(instance)
 
 
 class Item(Statistics):
