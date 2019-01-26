@@ -80,21 +80,20 @@ def update_statistics(sender, instance, *args, **kwargs):
 # TODO reduce code in these functions
 # this code is really ugly !
 def remove_item_stats(instance):
-    hero = Hero.objects.get(pk=instance.pk)
-    hero_to_update = Hero.objects.filter(pk=instance.pk)  # TODO why without index return queryset?
-    for item in hero.item_set.all():
-        hero_to_update.update(
-            strength = hero.strength - item.strength,
-            defense = hero.defense - item.defense,
-            physical_attack = hero.physical_attack - item.physical_attack,
-            intelligence = hero.intelligence - item.intelligence,
-            magic_attack = hero.magic_attack - item.magic_attack,
-            magic_resist = hero.magic_resist - item.magic_resist,
-            agility = hero.agility - item.agility,
-            dodge_chance = hero.dodge_chance - item.dodge_chance,
-            critic_chance = hero.critic_chance - item.critic_chance,
-            vitality = hero.vitality - item.vitality,
-            health = hero.health - item.health,
+    hero = Hero.objects.filter(pk=instance.pk)  # TODO why without index return queryset?
+    for item in hero[0].item_set.all():
+        hero.update(
+            strength = hero[0].strength - item.strength,
+            defense = hero[0].defense - item.defense,
+            physical_attack = hero[0].physical_attack - item.physical_attack,
+            intelligence = hero[0].intelligence - item.intelligence,
+            magic_attack = hero[0].magic_attack - item.magic_attack,
+            magic_resist = hero[0].magic_resist - item.magic_resist,
+            agility = hero[0].agility - item.agility,
+            dodge_chance = hero[0].dodge_chance - item.dodge_chance,
+            critic_chance = hero[0].critic_chance - item.critic_chance,
+            vitality = hero[0].vitality - item.vitality,
+            health = hero[0].health - item.health,
         )
 
 
@@ -113,21 +112,20 @@ def calculate_stats(instance):
 
 # this code is really ugly !
 def add_item_stats(instance):
-    hero = Hero.objects.get(pk=instance.pk)  # TODO why without index return queryset?
-    hero_to_update = Hero.objects.filter(pk=instance.pk)
-    for item in hero.item_set.all():
-        hero_to_update.update(
-            strength = hero.strength + item.strength,
-            defense = hero.defense + item.defense,
-            physical_attack = hero.physical_attack + item.physical_attack,
-            intelligence = hero.intelligence + item.intelligence,
-            magic_attack = hero.magic_attack + item.magic_attack,
-            magic_resist = hero.magic_resist + item.magic_resist,
-            agility = hero.agility + item.agility,
-            dodge_chance = hero.dodge_chance + item.dodge_chance,
-            critic_chance = hero.critic_chance + item.critic_chance,
-            vitality = hero.vitality + item.vitality,
-            health = hero.health + item.health,
+    hero = Hero.objects.filter(pk=instance.pk)  # TODO why without index return queryset?
+    for item in hero[0].item_set.all():
+        hero.update(
+            strength = hero[0].strength + item.strength,
+            defense = hero[0].defense + item.defense,
+            physical_attack = hero[0].physical_attack + item.physical_attack,
+            intelligence = hero[0].intelligence + item.intelligence,
+            magic_attack = hero[0].magic_attack + item.magic_attack,
+            magic_resist = hero[0].magic_resist + item.magic_resist,
+            agility = hero[0].agility + item.agility,
+            dodge_chance = hero[0].dodge_chance + item.dodge_chance,
+            critic_chance = hero[0].critic_chance + item.critic_chance,
+            vitality = hero[0].vitality + item.vitality,
+            health = hero[0].health + item.health,
         )
 
 
