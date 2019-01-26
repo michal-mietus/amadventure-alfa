@@ -1,5 +1,5 @@
 from ...models import Hero, Item, add_item_stats, remove_item_stats, calculate_stats
-from .set_ups import UserSetUp
+from .set_ups import UserSetUp, ItemFunctionsSetUp
 
 class TestItem(UserSetUp):
     def setUp(self):
@@ -23,84 +23,59 @@ class TestItem(UserSetUp):
         self.assertEqual(str(self.item), str_repr)
 
 
-class TestItemFunctions(UserSetUp):
+class TestItemFunctions(ItemFunctionsSetUp):
     def setUp(self):
         super().setUp()
-        self.strength = 10
-        self.intelligence = 10
-        self.agility = 10
-        self.vitality = 10
         self.hero = self.create_hero()
-
-        self.item_strength = 2
-        self.item_intelligence = 2
-        self.item_agility = 2
-        self.item_vitality = 2
-        item = self.create_item()
-
-    def create_hero(self):
-        hero = Hero.objects.create(
-            owner=self.user,
-            name='hero',
-            level = 10,
-            experience = 10,
-            strength = self.strength,
-            intelligence = self.intelligence,
-            agility = self.agility,
-            vitality = self.vitality,
-        )
-        return hero
-
-    def create_item(self):
-        item = Item.objects.create(
-            name='axe',
-            owner=self.hero,
-            strength=self.item_strength,
-            intelligence=self.item_intelligence,
-            agility=self.item_agility,
-            vitality=self.item_vitality,
-        )
-        return item
+        self.initial_stats = 10
+        self.items = []
+        self.items.append(self.create_items(10))
 
     def test_add_item_stats(self):
         add_item_stats(self.hero)
+
+        """ TODO Pull this code out of method (it repeats in remove method)"""
         items_strength = 0
         items_intelligence = 0
         items_agility = 0
         items_vitality = 0
         for item in self.hero.item_set.all():
             items_strength += item.strength
-            items_intelligence = item.intelligence
+            items_intelligence += item.intelligence
             items_agility += item.agility
             items_vitality += item.vitality
 
         # had to reload hero object
-        self.hero = Hero.objects.get(owner=self.user)
+        self.reload_hero_instance()
             
-        self.assertEqual(self.hero.strength, self.strength + items_strength)
-        self.assertEqual(self.hero.intelligence, self.intelligence + items_intelligence)
-        self.assertEqual(self.hero.agility, self.agility + items_agility)
-        self.assertEqual(self.hero.vitality, self.vitality + items_vitality)
+        self.assertEqual(self.hero.strength, self.initial_stats + items_strength)
+        self.assertEqual(self.hero.intelligence, (self.initial_stats + items_intelligence))
+        self.assertEqual(self.hero.agility, (self.initial_stats + items_agility))
+        self.assertEqual(self.hero.vitality, (self.initial_stats + items_vitality))
 
     def test_remove_item_stats(self):
+        add_item_stats(self.hero)
+        self.reload_hero_instance()
         remove_item_stats(self.hero)
+        self.reload_hero_instance()
+
         items_strength = 0
         items_intelligence = 0
         items_agility = 0
         items_vitality = 0
         for item in self.hero.item_set.all():
             items_strength += item.strength
-            items_intelligence = item.intelligence
+            items_intelligence += item.intelligence
             items_agility += item.agility
             items_vitality += item.vitality
 
         # had to reload hero object
-        self.hero = Hero.objects.get(owner=self.user)
+        self.reload_hero_instance()
             
-        self.assertEqual(self.hero.strength, self.strength - items_strength)
-        self.assertEqual(self.hero.intelligence, self.intelligence - items_intelligence)
-        self.assertEqual(self.hero.agility, self.agility - items_agility)
-        self.assertEqual(self.hero.vitality, self.vitality - items_vitality)
+        self.assertEqual(self.initial_stats, self.hero.strength)
+        self.assertEqual(self.initial_stats, self.hero.intelligence)
+        self.assertEqual(self.initial_stats, self.hero.agility)
+        self.assertEqual(self.initial_stats, self.hero.vitality)
 
     def test_calculate_stats(self):
         calculate_stats(self.hero)
