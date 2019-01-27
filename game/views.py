@@ -5,7 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import HeroCreateForm, HeroUpgradeForm
 from .models import Hero
-from .decorators import hero_created_require
+from .decorators import hero_created_require, logged_user_redirect_to_main_view
+
+
+@method_decorator(logged_user_redirect_to_main_view, name='dispatch')
+class WelcomeView(TemplateView):
+    template_name = 'game/amadventure.html'
 
 
 @method_decorator(login_required, name='dispatch')
