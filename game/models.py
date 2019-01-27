@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.core.validators import MinValueValidator
 
 
+# TODO why don't use one to one relation for statistics with hero and item models?
 class Statistics(models.Model):
     strength = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
     defense = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])  # 0.5 * strength
@@ -97,6 +98,7 @@ def remove_item_stats(instance):
         )
 
 
+# TODO prevent defense and other stats to be lower or equal 0
 def calculate_stats(instance):
     hero = Hero.objects.filter(pk=instance.pk)
     hero.update(
