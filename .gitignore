@@ -1,6 +1,7 @@
 *.sqlite3
 *.pyc
 *.jpg
+*.png
 *__pychache__*
 
 .coverage
@@ -12,4 +13,3 @@ game/__pycache__/
 amadventure/__pycache__/
 .vscode/
 env-amadventure/
-
