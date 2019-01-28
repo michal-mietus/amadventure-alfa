@@ -6,6 +6,7 @@
         <title>Amadventure - {% block title %}{% endblock %}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Amadventure is a web browser game taking place in mythic world.">
         <!-- Google fronts api -->
         <!-- call: font-family: 'Sarabun', sans-serif; -->
         <link href="https://fonts.googleapis.com/css?family=Sarabun" rel="stylesheet">
@@ -20,7 +21,7 @@
             </div>
             <nav>
                 {% if user.is_authenticated %}
-                    <div class="home"><a href="">Home</a></div>
+                    <div class="home"><a href="{% url 'game:main' %}">Home</a></div>
                     <div class="hero"><a href="">Hero</a></div>
                     <div class="locations"><a href="">Locations</a></div>
                     <div class="sign-out"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></div>
