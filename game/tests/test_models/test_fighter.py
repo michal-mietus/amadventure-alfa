@@ -49,4 +49,3 @@ class TestFighter(TestCase):
         self.attacking_fighter.hit_enemy(self.enemy_hero)
         enemy_health_after_hit = enemy_health - total_damage
         self.assertEqual(enemy_health_after_hit, self.enemy_hero.health)
-    
