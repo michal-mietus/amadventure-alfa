@@ -1,7 +1,8 @@
 import random
 from django.test import TestCase
 from django.contrib.auth.models import User
-from ...models import Hero, Item
+from ...models.hero import Hero
+from ...models.item import Item
 
 
 class UserSetUp(TestCase):
