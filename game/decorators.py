@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, reverse
-from .models import Hero
+from .models.hero import Hero
 
 
 def hero_created_require(function):
