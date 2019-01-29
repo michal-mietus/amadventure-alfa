@@ -1,5 +1,6 @@
 from django.test import TestCase
-from ...models import Location, Action
+from ...models.location import Location
+from ...models.action import Action
 
 
 class TestAction(TestCase):

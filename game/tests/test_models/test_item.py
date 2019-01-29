@@ -1,4 +1,5 @@
-from ...models import Hero, Item, add_item_stats, remove_item_stats, calculate_stats
+from ...models.hero import Hero, add_item_stats, remove_item_stats, calculate_stats
+from ...models.item import Item
 from .set_ups import UserSetUp, ItemFunctionsSetUp
 
 class TestItem(UserSetUp):

@@ -1,4 +1,4 @@
-from ...models import Hero
+from ...models.hero import Hero
 from .set_ups import UserSetUp
 
 class TestHero(UserSetUp):
