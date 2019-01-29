@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
-from ..models import Hero
+from ..models.hero import Hero
 
 
 class UserSetUp(TestCase):
@@ -27,7 +27,7 @@ class TestMainView(UserSetUp):
     def test_prevent_logged_user_access_main(self):
         url = self.app_name + ':' + self.url_name
         response = self.client.get(reverse(url))
-        self.assertRedirects(response, '/user/sign_in/?next=/')
+        self.assertRedirects(response, '/user/sign_in/?next=/main/')
 
     def test_allow_logged_user_access_main(self):
         self.login_user()
