@@ -19,6 +19,10 @@ body
     text-align: center;
 }
 
+.logo img {
+    max-width: 100%;
+}
+
 nav {
     grid-row: nav / main;
     grid-column: main / end-main;
