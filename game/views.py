@@ -4,8 +4,10 @@ from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import HeroCreateForm, HeroUpgradeForm
-from .models import Hero
+from .models.hero import Hero
 from .decorators import hero_created_require, logged_user_redirect_to_main_view
+from .models.new_hero import NewHero
+from .models.new_item import NewItem
 
 
 @method_decorator(logged_user_redirect_to_main_view, name='dispatch')
