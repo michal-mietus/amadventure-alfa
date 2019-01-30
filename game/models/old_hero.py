@@ -61,6 +61,7 @@ def remove_item_stats(instance):
         )
 
 
+# TODO prevent defense and other stats to be lower or equal 0
 def calculate_stats(instance):
     hero = Hero.objects.filter(pk=instance.pk)
     hero.update(
