@@ -4,8 +4,8 @@ from .models.hero import Hero
 
 def hero_created_require(function):
     def wrapper(request, *args, **kwargs):
-        if not Hero.objects.filter(owner=request.user):
-            return redirect(reverse('game:hero_create'))
+        if not Hero.objects.filter(user=request.user):
+            return redirect(reverse('game:create_hero'))
         return function(request, *args, **kwargs)
     return wrapper
 
