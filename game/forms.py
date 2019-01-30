@@ -1,14 +1,16 @@
-from django.forms import ModelForm
+from django import forms
 from .models.hero import Hero
+from .models.statistic import HeroStatistic
 
 
-class HeroCreateForm(ModelForm):
+class HeroForm(forms.ModelForm):
     class Meta:
         model = Hero
-        fields = ['name', 'strength', 'intelligence', 'agility', 'vitality']
+        fields = ['name']
 
 
-class HeroUpgradeForm(ModelForm):
-    class Meta:
-        model = Hero
-        fields = ['strength', 'intelligence', 'agility', 'vitality']
+class HeroStatisticsForm(forms.Form):
+    strength = forms.IntegerField(min_value=1)
+    intelligence = forms.IntegerField(min_value=1)
+    agility = forms.IntegerField(min_value=1)
+    vitality = forms.IntegerField(min_value=1)
