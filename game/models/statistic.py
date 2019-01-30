@@ -20,9 +20,9 @@ class Statistic(models.Model):
             self.value = self.parent.value * self.multiplier
 
 
-class HeroStatistics(Statistic):
+class HeroStatistic(Statistic):
     owner = models.ForeignKey(Hero, on_delete=models.CASCADE)
 
 
-class ItemStatistics(Statistic):
+class ItemStatistic(Statistic):
     owner = models.ForeignKey(Item, on_delete=models.CASCADE)
