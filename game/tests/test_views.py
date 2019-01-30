@@ -44,14 +44,14 @@ class TestHeroCreateView(UserSetUp):
     def setUp(self):
         super().setUp()
         self.app_name = 'game'
-        self.url_name = 'hero_create'
+        self.url_name = 'create_hero'
         self.url = self.app_name + ':' + self.url_name
 
-    def test_prevent_logged_user_access_main(self):
+    def test_prevent_logged_user_access_create_hero_view(self):
         response = self.client.get(reverse(self.url))
-        self.assertRedirects(response, '/user/sign_in/?next=/hero_create/')
+        self.assertRedirects(response, '/user/sign_in/?next=/create_hero/')
 
-    def test_allow_logged_user_access_main(self):
+    def test_allow_logged_user_access_create_hero_view(self):
         self.login_user()
         response = self.client.get(reverse(self.url))
         self.assertTemplateUsed('create_hero.html')
