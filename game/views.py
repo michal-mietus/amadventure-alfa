@@ -54,7 +54,7 @@ class HeroUpgradeView(UpdateView):
     def get_success_url(self):
         return reverse('game:main')
 
-
+# TODO login required decorator
 def create_hero(request):
     if request.method == 'POST':
         # TODO pass arguments to statistic and hero models
