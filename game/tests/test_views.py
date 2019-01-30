@@ -46,13 +46,6 @@ class TestHeroCreateView(UserSetUp):
         self.app_name = 'game'
         self.url_name = 'hero_create'
         self.url = self.app_name + ':' + self.url_name
-        self.hero_object = {
-            'name':' hero_name',
-            'strength': 10,
-            'intelligence': 10,
-            'agility': 10,
-            'vitality': 10
-        }
 
     def test_prevent_logged_user_access_main(self):
         response = self.client.get(reverse(self.url))
@@ -63,39 +56,13 @@ class TestHeroCreateView(UserSetUp):
         response = self.client.get(reverse(self.url))
         self.assertTemplateUsed('create_hero.html')
 
-    def test_valid_create_hero(self):
-        self.login_user()
-        response = self.client.post(reverse(self.url), data=self.hero_object)
-        self.assertEqual(response.status_code, 302)
 
-    def test_invalid_create_hero(self):
-        self.login_user()
-        response = self.client.post(reverse(self.url), data={
-            'name':' hero_name',
-            'strength': None,
-            'intelligence': 'asddas',
-            'agility': 10,
-            'vitality': 10
-        })        
-        self.assertEqual(response.status_code, 200)
-
-    
 class TestHeroUpgradeView(UserSetUp):
     def setUp(self):
         super().setUp()
         self.app_name = 'game'
         self.url_name = 'hero_upgrade'
         self.url = self.app_name + ':' + self.url_name
-        self.hero = Hero.objects.create(
-            owner=self.user,
-            name='hero',
-            level = 10,
-            experience = 10,
-            strength = 10,
-            intelligence = 10,
-            agility = 10,
-            vitality = 10,
-        )
     
     def test_prevent_logged_user_access_upgrade_view(self):
         response = self.client.get(reverse(self.url))
@@ -105,9 +72,3 @@ class TestHeroUpgradeView(UserSetUp):
         self.login_user()
         response = self.client.get(reverse(self.url))
         self.assertTemplateUsed('upgrade_hero.html')
-
-    def test_user_try_upgrade_hero_without_having_him(self):
-        self.login_user()
-        Hero.objects.all().delete()
-        response = self.client.get(reverse(self.url))
-        self.assertRedirects(response, reverse('game:hero_create'))
