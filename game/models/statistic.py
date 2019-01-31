@@ -21,8 +21,18 @@ class Statistic(models.Model):
 
 
 class HeroStatistic(Statistic):
+    # TODO change owner to hero
     owner = models.ForeignKey(Hero, on_delete=models.CASCADE)
+
+    def __str__(self):
+        str = self.owner.name + " statistic: " + self.name
+        return str
 
 
 class ItemStatistic(Statistic):
+    # TODO change owner to item
     owner = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+    def __str__(self):
+        str = self.owner.name + " statistic: " + self.name
+        return str
