@@ -1,13 +1,14 @@
 from django.shortcuts import render, reverse, redirect
+from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, UpdateView
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from .decorators import hero_created_require, logged_user_redirect_to_main_view
 from .forms import HeroForm, HeroStatisticsForm
 from .models.hero import Hero
 from .models.item import Item
 from .models.statistic import HeroStatistic
-from .decorators import hero_created_require, logged_user_redirect_to_main_view
 
 
 @method_decorator(logged_user_redirect_to_main_view, name='dispatch')
@@ -54,17 +55,18 @@ class HeroUpgradeView(UpdateView):
     def get_success_url(self):
         return reverse('game:main')
 
-# TODO login required decorator
+
+@login_required
 def create_hero(request):
     if request.method == 'POST':
-        # TODO pass arguments to statistic and hero models
         statistics = ['strength', 'intelligence', 'agility', 'vitality']
         hero_form = HeroForm(request.POST)
         hero_statistics_form = HeroStatisticsForm(request.POST)
         if all([hero_form.is_valid(), hero_statistics_form.is_valid()]):
+            user = User.objects.get(pk=request.user.pk)
             hero = Hero(
                 name = hero_form.cleaned_data['name'],
-                user = request.user
+                user = user
             )
             hero.save()
             hero = Hero.objects.filter(user=request.user)[0] # reload
@@ -76,10 +78,8 @@ def create_hero(request):
                     value=hero_statistics_form.cleaned_data[statistic_name]
                 )
                 hero_statistic.save()
-
-
         return render(request, 'game/success.html', {
-            'information': 'User created'
+            'information': 'Hero created'
         })
     else:
         hero_form = HeroForm()
