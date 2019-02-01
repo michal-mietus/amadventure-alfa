@@ -1,13 +1,24 @@
-from django.shortcuts import render, reverse, redirect
-from django.views.generic import TemplateView
+from django.shortcuts import render, reverse, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.contrib.auth.models import User
+from django.views.generic import TemplateView, DetailView
+from django.views.generic.base import ContextMixin, View
 from django.views.generic.edit import FormView, UpdateView
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from .decorators import hero_created_require, logged_user_redirect_to_main_view
 from .forms import HeroForm, HeroStatisticsForm
 from .models.hero import Hero
 from .models.item import Item
 from .models.statistic import HeroStatistic
-from .decorators import hero_created_require, logged_user_redirect_to_main_view
+
+
+class HeroPkContextView(ContextMixin):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        hero = Hero.objects.get(user=self.request.user)
+        context['hero_pk'] = hero.pk
+        return context
 
 
 @method_decorator(logged_user_redirect_to_main_view, name='dispatch')
@@ -16,55 +27,54 @@ class WelcomeView(TemplateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class MainView(TemplateView):
+class MainView(TemplateView, HeroPkContextView):
     template_name = 'game/main.html'
 
-
-@method_decorator(login_required, name='dispatch')
-class HeroCreateView(FormView):
-    template_name = 'game/create_hero.html'
-    form_class = HeroForm
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        form.save()
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse('game:main')
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            Hero.objects.get(user=self.request.user)
+        except Exception as e:
+            return redirect(reverse_lazy('game:create_hero'))
+        # so only call super method doesn't work, had to return it
+        return super().dispatch(request, *args, **kwargs)
 
 
-# why decorator works but overriding method and super() call doesnt
-# decorator order is important!
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(hero_created_require, name='dispatch')
-class HeroUpgradeView(UpdateView):
-    template_name = 'game/upgrade_hero.html'
+class HeroDetail(DetailView, HeroPkContextView):
     model = Hero
+    template_name = 'game/hero_detail.html'
+    context_object_name = 'hero'
 
-    def get_object(self, queryset=None):
-        # TODO how get current hero (if we would have more than one to choose)?
-        obj = Hero.objects.get(user=self.request.user)
-        return obj
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        hero = Hero.objects.get(user=self.request.user)
+        context['statistics'] = hero.get_all_statistics()
+        return context
 
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse('game:main')
-
-# TODO login required decorator
-def create_hero(request):
-    if request.method == 'POST':
-        # TODO pass arguments to statistic and hero models
+# TODO limit max hero limit to 1
+@method_decorator(login_required, name='dispatch')
+class CreateHeroView(View):
+    def get(self, request, *args, **kwargs):
+        hero_form = HeroForm()
+        hero_statistics_form = HeroStatisticsForm()
+        return render(request, 'game/create_hero.html', {
+            'hero_form': hero_form,
+            'hero_statistics_form': hero_statistics_form,
+            'hero_pk': 5
+        })
+    
+    def post(self, request, *args, **kwargs):
         statistics = ['strength', 'intelligence', 'agility', 'vitality']
         hero_form = HeroForm(request.POST)
         hero_statistics_form = HeroStatisticsForm(request.POST)
         if all([hero_form.is_valid(), hero_statistics_form.is_valid()]):
+            user = User.objects.get(pk=request.user.pk)
             hero = Hero(
                 name = hero_form.cleaned_data['name'],
-                user = request.user
+                user = user
             )
             hero.save()
             hero = Hero.objects.filter(user=request.user)[0] # reload
@@ -76,15 +86,33 @@ def create_hero(request):
                     value=hero_statistics_form.cleaned_data[statistic_name]
                 )
                 hero_statistic.save()
-
-
         return render(request, 'game/success.html', {
-            'information': 'User created'
+            'information': 'Hero created',
+            'hero_pk': 5
         })
-    else:
-        hero_form = HeroForm()
-        hero_statistics_form = HeroStatisticsForm()
-        return render(request, 'game/create_hero.html', {
-            'hero_form': hero_form,
-            'hero_statistics_form': hero_statistics_form
-        })
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(hero_created_require, name='dispatch')
+class UpgradeHeroView(FormView, HeroPkContextView):
+    statistics = ['strength', 'intelligence', 'agility', 'vitality']
+    form_class = HeroStatisticsForm
+    context_object_name = 'form'
+    template_name = 'game/upgrade_hero.html'
+    success_url = reverse_lazy('game:main')
+
+    def form_valid(self, form):
+        hero = get_object_or_404(Hero, user=self.request.user)
+        for statistic_name in self.statistics:
+            hero_statistic = hero.get_statistic(statistic_name)
+            hero_statistic.value = form.cleaned_data[statistic_name]
+            hero_statistic.save()
+        return super().form_valid(form)
+
+    def get_initial(self):
+        hero = get_object_or_404(Hero, user=self.request.user)
+        initial = super().get_initial()
+        for statistic in self.statistics:
+            value = hero.get_statistic(statistic).value
+            initial[statistic] = value
+        return initial

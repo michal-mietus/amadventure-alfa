@@ -61,12 +61,12 @@ class TestHeroUpgradeView(UserSetUp):
     def setUp(self):
         super().setUp()
         self.app_name = 'game'
-        self.url_name = 'hero_upgrade'
+        self.url_name = 'upgrade_hero'
         self.url = self.app_name + ':' + self.url_name
     
     def test_prevent_logged_user_access_upgrade_view(self):
         response = self.client.get(reverse(self.url))
-        self.assertRedirects(response, '/user/sign_in/?next=/hero_upgrade/')
+        self.assertRedirects(response, '/user/sign_in/?next=/upgrade_hero/')
 
     def test_allow_logged_user_access_upgrade_view(self):
         self.login_user()
