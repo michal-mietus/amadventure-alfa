@@ -6,14 +6,14 @@ from django.views.generic.base import ContextMixin, View
 from django.views.generic.edit import FormView, UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .decorators import hero_created_require, logged_user_redirect_to_main_view
+from .decorators import hero_created_require, logged_user_redirect_to_main_view, deny_user_create_more_than_one_hero
 from .forms import HeroForm, HeroStatisticsForm
 from .models.hero import Hero
 from .models.item import Item
 from .models.statistic import HeroStatistic
 
 
-class HeroPkContextView(ContextMixin):
+class HeroGetPkContextMixin(ContextMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         hero = Hero.objects.get(user=self.request.user)
@@ -27,7 +27,7 @@ class WelcomeView(TemplateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class MainView(TemplateView, HeroPkContextView):
+class MainView(TemplateView, HeroGetPkContextMixin):
     template_name = 'game/main.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -42,7 +42,7 @@ class MainView(TemplateView, HeroPkContextView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(hero_created_require, name='dispatch')
-class HeroDetail(DetailView, HeroPkContextView):
+class HeroDetail(DetailView, HeroGetPkContextMixin):
     model = Hero
     template_name = 'game/hero_detail.html'
     context_object_name = 'hero'
@@ -56,6 +56,7 @@ class HeroDetail(DetailView, HeroPkContextView):
 
 # TODO limit max hero limit to 1
 @method_decorator(login_required, name='dispatch')
+@method_decorator(deny_user_create_more_than_one_hero, name='dispatch')
 class CreateHeroView(View):
     def get(self, request, *args, **kwargs):
         hero_form = HeroForm()
@@ -94,7 +95,7 @@ class CreateHeroView(View):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(hero_created_require, name='dispatch')
-class UpgradeHeroView(FormView, HeroPkContextView):
+class UpgradeHeroView(FormView, HeroGetPkContextMixin):
     statistics = ['strength', 'intelligence', 'agility', 'vitality']
     form_class = HeroStatisticsForm
     context_object_name = 'form'
