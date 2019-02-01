@@ -30,6 +30,15 @@ class WelcomeView(TemplateView):
 class MainView(TemplateView, HeroPkContextView):
     template_name = 'game/main.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            Hero.objects.get(user=self.request.user)
+        except Exception as e:
+            return redirect(reverse_lazy('game:create_hero'))
+        # so only call super method doesn't work, had to return it
+        return super().dispatch(request, *args, **kwargs)
+
+
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(hero_created_require, name='dispatch')
@@ -45,11 +54,19 @@ class HeroDetail(DetailView, HeroPkContextView):
         return context
 
 
-# TODO change to generic view
 # TODO limit max hero limit to 1
-@login_required
-def create_hero(request):
-    if request.method == 'POST':
+@method_decorator(login_required, name='dispatch')
+class CreateHeroView(View):
+    def get(self, request, *args, **kwargs):
+        hero_form = HeroForm()
+        hero_statistics_form = HeroStatisticsForm()
+        return render(request, 'game/create_hero.html', {
+            'hero_form': hero_form,
+            'hero_statistics_form': hero_statistics_form,
+            'hero_pk': 5
+        })
+    
+    def post(self, request, *args, **kwargs):
         statistics = ['strength', 'intelligence', 'agility', 'vitality']
         hero_form = HeroForm(request.POST)
         hero_statistics_form = HeroStatisticsForm(request.POST)
@@ -70,14 +87,8 @@ def create_hero(request):
                 )
                 hero_statistic.save()
         return render(request, 'game/success.html', {
-            'information': 'Hero created'
-        })
-    else:
-        hero_form = HeroForm()
-        hero_statistics_form = HeroStatisticsForm()
-        return render(request, 'game/create_hero.html', {
-            'hero_form': hero_form,
-            'hero_statistics_form': hero_statistics_form
+            'information': 'Hero created',
+            'hero_pk': 5
         })
 
 
