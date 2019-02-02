@@ -26,7 +26,7 @@ body
 nav {
     grid-row: nav / main;
     grid-column: main / end-main;
-    background-color: #1c7773;
+    background-color: #148d87;
     display: grid;
     grid-template-columns: 0.25fr 0.25fr 0.25fr 0.25fr;
     grid-auto-rows: 1fr;
