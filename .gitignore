@@ -1,0 +1,15 @@
+*.sqlite3
+*.pyc
+*.jpg
+*.png
+*__pychache__*
+
+.coverage
+.coveragerc
+
+.pytest_cache/
+htmlcov/
+game/__pycache__/
+amadventure/__pycache__/
+.vscode/
+env-amadventure/

@@ -1,0 +1,44 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Amadventure - {% block title %}{% endblock %}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Amadventure is a web browser game taking place in mythic world.">
+        <!-- Google fronts api -->
+        <!-- call: font-family: 'Sarabun', sans-serif; -->
+        <link href="https://fonts.googleapis.com/css?family=Sarabun" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static '/styles/min-460px-width.css' %}">
+        {% block styles %}{% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo">
+                <img src="{% static '/images/Amadventure-logo.png' %}">
+            </div>
+            <nav>
+                {% if user.is_authenticated %}
+                    <div class="home"><a href="{% url 'game:main' %}">Home</a></div>
+                    <div class="hero"><a href="{% url 'game:hero_detail' pk=hero_pk %}">Hero</a></div>
+                    <div class="locations"><a href="">Locations</a></div>
+                    <div class="sign-out"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></div>
+                {% else %}
+                    <div class="sign-in"><a href="{% url 'usersystem:sign_in' %}">Sign in</a></div>
+                    <div class="sign-up"><a href="{% url 'usersystem:sign_up' %}">Sign up</a></div>
+                {% endif %}
+            </nav>
+            <main>
+                <div class="content">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+            <footer>
+                <!--Created by: -->
+            </footer>
+            {% block scripts %}{% endblock %}
+        </div>
+    </body>
+</html>

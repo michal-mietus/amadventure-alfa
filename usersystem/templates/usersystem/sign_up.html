@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'usersystem/styles/forms.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'usersystem/styles/not_logged_nav.css' %}">
+{% endblock %}
+
+{% block content %}
+    <form method="POST" action="{% url 'usersystem:sign_up' %}">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Sign up">
+    </form>
+{% endblock %}
