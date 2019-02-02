@@ -9,6 +9,7 @@
         <meta name="description" content="Amadventure is a web browser game taking place in mythic world.">
         <!-- Google fronts api -->
         <!-- call: font-family: 'Sarabun', sans-serif; -->
+        <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/hostingsme/image/upload/v1549034217/Amadventure-favicon.png"/>
         <link href="https://fonts.googleapis.com/css?family=Sarabun" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static '/styles/min-460px-width.css' %}">
@@ -17,12 +18,17 @@
     <body>
         <div class="container">
             <div class="logo">
-                <img src="{% static '/images/Amadventure-logo.png' %}">
+                <img src="https://res.cloudinary.com/hostingsme/image/upload/v1549034221/Amadventure-logo.png">
             </div>
             <nav>
                 {% if user.is_authenticated %}
                     <div class="home"><a href="{% url 'game:main' %}">Home</a></div>
-                    <div class="hero"><a href="{% url 'game:hero_detail' pk=hero_pk %}">Hero</a></div>
+                    {% if hero_pk %}
+                        <div class="hero"><a href="{% url 'game:hero_detail' pk=hero_pk %}">Hero</a></div>
+                    {% else %}
+                        <div class="hero"><a href="{% url 'game:create_hero' %}">Create hero</a></div>
+                    {% endif %}
+
                     <div class="locations"><a href="">Locations</a></div>
                     <div class="sign-out"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></div>
                 {% else %}
@@ -31,6 +37,7 @@
                 {% endif %}
             </nav>
             <main>
+                {{ user_pk }}
                 <div class="content">
                     {% block content %}{% endblock %}
                 </div>
