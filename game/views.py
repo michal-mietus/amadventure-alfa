@@ -21,7 +21,6 @@ class HeroGetPkContextMixin(ContextMixin):
             context['hero_pk'] = hero.pk
         except Exception as e:
             context['hero_pk'] = False
-        print(context['hero_pk'])
         return context
 
 
