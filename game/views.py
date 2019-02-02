@@ -16,8 +16,12 @@ from .models.statistic import HeroStatistic
 class HeroGetPkContextMixin(ContextMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        hero = Hero.objects.get(user=self.request.user)
-        context['hero_pk'] = hero.pk
+        try:
+            hero = Hero.objects.get(user=self.request.user)
+            context['hero_pk'] = hero.pk
+        except Exception as e:
+            context['hero_pk'] = False
+        print(context['hero_pk'])
         return context
 
 
@@ -29,15 +33,6 @@ class WelcomeView(TemplateView):
 @method_decorator(login_required, name='dispatch')
 class MainView(TemplateView, HeroGetPkContextMixin):
     template_name = 'game/main.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        try:
-            Hero.objects.get(user=self.request.user)
-        except Exception as e:
-            return redirect(reverse_lazy('game:create_hero'))
-        # so only call super method doesn't work, had to return it
-        return super().dispatch(request, *args, **kwargs)
-
 
 
 @method_decorator(login_required, name='dispatch')
@@ -57,14 +52,13 @@ class HeroDetail(DetailView, HeroGetPkContextMixin):
 # TODO limit max hero limit to 1
 @method_decorator(login_required, name='dispatch')
 @method_decorator(deny_user_create_more_than_one_hero, name='dispatch')
-class CreateHeroView(View):
+class CreateHeroView(View, HeroGetPkContextMixin):
     def get(self, request, *args, **kwargs):
         hero_form = HeroForm()
         hero_statistics_form = HeroStatisticsForm()
         return render(request, 'game/create_hero.html', {
             'hero_form': hero_form,
             'hero_statistics_form': hero_statistics_form,
-            'hero_pk': 5
         })
     
     def post(self, request, *args, **kwargs):
@@ -89,7 +83,6 @@ class CreateHeroView(View):
                 hero_statistic.save()
         return render(request, 'game/success.html', {
             'information': 'Hero created',
-            'hero_pk': 5
         })
 
 
