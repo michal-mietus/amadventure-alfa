@@ -127,3 +127,39 @@ class TestHeroUpgradeView(UserSetUp):
                 name=statistic_name,
                 value=10
             )
+
+
+class TestHeroOwnedView(UserSetUp):
+    def test_access_page_without_created_hero_returns_create_hero_view(self):
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.get(reverse('game:hero_owned'), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'game/create_hero.html')
+
+    def test_access_page_without_created_hero_redirect(self):
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.get(reverse('game:hero_owned'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_valid_access_page_with_created_hero(self):
+        hero = Hero.objects.create(name='hero_name', user=self.user)
+        self.create_hero_statistics(hero)
+        self.login_user()
+        response = self.client.get(reverse('game:hero_owned'))
+        self.assertEqual(response.context['hero'], hero)
+        hero_statistics = hero.get_all_statistics()
+        self.assertQuerysetEqual(
+            response.context['statistics'], 
+            hero_statistics,
+            transform=lambda x: x,
+            ordered=False
+        )
+
+    def create_hero_statistics(self, hero):
+        statistic_names = ['strength', 'intelligence', 'agility', 'vitality']
+        for statistic_name in statistic_names:
+            HeroStatistic.objects.create(
+                owner=hero,
+                name=statistic_name,
+                value=10
+            )
