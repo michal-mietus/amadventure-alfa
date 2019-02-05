@@ -1,9 +1,11 @@
 from django.test import TestCase, Client, RequestFactory
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
+from django.views.generic import TemplateView
 from ..models.hero import Hero
 from ..models.statistic import HeroStatistic
 from .. import views
+
 
 
 class UserSetUp(TestCase):
@@ -18,6 +20,15 @@ class UserSetUp(TestCase):
 
     def login_user(self):
         self.client.login(username=self.username, password=self.password)
+    
+
+class UserAndHeroSetUp(UserSetUp):
+    def setUp(self):
+        super().setUp()
+        self.hero = Hero.objects.create(
+            user=self.user,
+            name='hero_name',
+        )
 
 
 class TestMainView(UserSetUp):
@@ -59,7 +70,7 @@ class TestHeroCreateView(UserSetUp):
         self.assertTemplateUsed('create_hero.html')
 
 
-class TestHeroUpgradeView(UserSetUp):
+class TestUpgradeHeroView(UserSetUp):
     def setUp(self):
         super().setUp()
         self.factory = RequestFactory()
@@ -95,6 +106,7 @@ class TestHeroUpgradeView(UserSetUp):
             'agility': 10,
             'vitality': 10
         }
+
         response = self.client.post(reverse(self.url), statistics)
         self.assertEqual(response.status_code, 302)
         self.assertQuerysetEqual(
@@ -163,3 +175,4 @@ class TestHeroOwnedView(UserSetUp):
                 name=statistic_name,
                 value=10
             )
+

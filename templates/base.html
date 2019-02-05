@@ -5,42 +5,52 @@
     <head>
         <title>Amadventure - {% block title %}{% endblock %}</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="Amadventure is a web browser game taking place in mythic world.">
         <!-- Google fronts api -->
         <!-- call: font-family: 'Sarabun', sans-serif; -->
-        <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/hostingsme/image/upload/v1549034217/Amadventure-favicon.png"/>
         <link href="https://fonts.googleapis.com/css?family=Sarabun" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="{% static '/styles/base.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static '/styles/min-460px-width.css' %}">
+        <!-- shortcut icon -->
+        <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/hostingsme/image/upload/v1549034217/Amadventure-favicon.png"/>
+         <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'styles/base.css' %}">
         {% block styles %}{% endblock %}
     </head>
     <body>
-        <div class="container">
-            <div class="logo">
-                <img src="https://res.cloudinary.com/hostingsme/image/upload/v1549034221/Amadventure-logo.png">
-            </div>
-            <nav>
-                {% if user.is_authenticated %}
-                    <div class="home"><a href="{% url 'game:main' %}">Home</a></div>
-                    <div class="hero"><a href="{% url 'game:hero_owned' %}">Hero</a></div>
-                    <div class="locations"><a href="">Locations</a></div>
-                    <div class="sign-out"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></div>
-                {% else %}
-                    <div class="sign-in"><a href="{% url 'usersystem:sign_in' %}">Sign in</a></div>
-                    <div class="sign-up"><a href="{% url 'usersystem:sign_up' %}">Sign up</a></div>
-                {% endif %}
-            </nav>
-            <main>
-                {{ user_pk }}
-                <div class="content">
-                    {% block content %}{% endblock %}
-                </div>
-            </main>
-            <footer>
-                <!--Created by: -->
-            </footer>
-            {% block scripts %}{% endblock %}
+        <div class="logo">
+            <img src="https://res.cloudinary.com/hostingsme/image/upload/v1549034221/Amadventure-logo.png">
         </div>
+        <nav>
+            <div class="container">
+                <div class="row">
+                    {% if user.is_authenticated %}
+                        <div class="home col-sm-3 text-center text-md-left p-2"><a href="{% url 'game:main' %}">Home</a></div>
+                        <div class="hero col-sm-3 text-center text-md-left p-2"><a href="{% url 'game:hero_owned' %}">Hero</a></div>
+                        <div class="locations col-sm-3 text-center text-md-left p-2"><a href="">Locations</a></div>
+                        <div class="sign-out col-sm-3 text-center text-md-left p-2"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></div>
+                    {% else %}
+                        <div class="sign-in col-sm-6 text-center text-md-left p-2"><a href="{% url 'usersystem:sign_in' %}">Sign in</a></div>
+                        <div class="sign-up col-sm-6 text-center text-md-left p-2"><a href="{% url 'usersystem:sign_up' %}">Sign up</a></div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <div class="container">
+                    {% block content %}{% endblock %}
+            </div>
+        </main>
+
+        <footer>
+            <!--Created by: -->
+        </footer>
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        {% block scripts %}{% endblock %}
     </body>
 </html>

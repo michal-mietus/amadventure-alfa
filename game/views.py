@@ -91,6 +91,7 @@ class CreateHeroView(View):
                     value=hero_statistics_form.cleaned_data[statistic_name]
                 )
                 hero_statistic.save()
+            #  TODO maybe instead of rendering success redirect to detail hero view
         return render(request, 'game/success.html', {
             'information': 'Hero created',
         })
