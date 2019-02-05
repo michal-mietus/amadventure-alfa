@@ -19,20 +19,14 @@
     </head>
     <body>
         <div class="logo">
-            <img src="{% static 'images/Amadventure-logo.png' %}">
+            <img src="https://res.cloudinary.com/hostingsme/image/upload/v1549034221/Amadventure-logo.png">
         </div>
         <nav>
             <div class="container">
                 <div class="row">
                     {% if user.is_authenticated %}
                         <div class="home col-sm-3 text-center text-md-left p-2"><a href="{% url 'game:main' %}">Home</a></div>
-                        <div class="hero col-sm-3 text-center text-md-left p-2">
-                        {% if hero_pk %}
-                            <a href="{% url 'game:hero_detail' pk=hero_pk %}">Hero</a>
-                        {% else %}
-                            <a href="{% url 'game:create_hero' %}">Create hero</a>
-                        {% endif %}
-                        </div>
+                        <div class="hero col-sm-3 text-center text-md-left p-2"><a href="{% url 'game:hero_owned' %}">Hero</a></div>
                         <div class="locations col-sm-3 text-center text-md-left p-2"><a href="">Locations</a></div>
                         <div class="sign-out col-sm-3 text-center text-md-left p-2"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></div>
                     {% else %}
