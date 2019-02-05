@@ -23,12 +23,7 @@
             <nav>
                 {% if user.is_authenticated %}
                     <div class="home"><a href="{% url 'game:main' %}">Home</a></div>
-                    {% if hero_pk %}
-                        <div class="hero"><a href="{% url 'game:hero_detail' pk=hero_pk %}">Hero</a></div>
-                    {% else %}
-                        <div class="hero"><a href="{% url 'game:create_hero' %}">Create hero</a></div>
-                    {% endif %}
-
+                    <div class="hero"><a href="{% url 'game:hero_owned' %}">Hero</a></div>
                     <div class="locations"><a href="">Locations</a></div>
                     <div class="sign-out"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></div>
                 {% else %}
