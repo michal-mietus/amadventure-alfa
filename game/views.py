@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.base import ContextMixin, View
 from django.views.generic.edit import FormView, UpdateView
 from django.utils.decorators import method_decorator
@@ -13,36 +13,32 @@ from .models.item import Item
 from .models.statistic import HeroStatistic
 
 
-class HeroGetPkContextMixin(ContextMixin):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        hero = Hero.objects.get(user=self.request.user)
-        context['hero_pk'] = hero.pk
-        return context
-
-
 @method_decorator(logged_user_redirect_to_main_view, name='dispatch')
 class WelcomeView(TemplateView):
     template_name = 'game/amadventure.html'
 
 
 @method_decorator(login_required, name='dispatch')
-class MainView(TemplateView, HeroGetPkContextMixin):
+class MainView(TemplateView):
     template_name = 'game/main.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        try:
-            Hero.objects.get(user=self.request.user)
-        except Exception as e:
-            return redirect(reverse_lazy('game:create_hero'))
-        # so only call super method doesn't work, had to return it
-        return super().dispatch(request, *args, **kwargs)
-
 
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(hero_created_require, name='dispatch')
-class HeroDetail(DetailView, HeroGetPkContextMixin):
+class HeroOwned(TemplateView):
+    template_name = 'game/hero_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        hero = get_object_or_404(Hero, user=self.request.user)
+        context['hero'] = hero
+        context['statistics'] = hero.get_all_statistics()
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(hero_created_require, name='dispatch')
+class HeroDetail(DetailView):
     model = Hero
     template_name = 'game/hero_detail.html'
     context_object_name = 'hero'
@@ -52,6 +48,15 @@ class HeroDetail(DetailView, HeroGetPkContextMixin):
         hero = Hero.objects.get(user=self.request.user)
         context['statistics'] = hero.get_all_statistics()
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(hero_created_require, name='dispatch')
+class HeroList(ListView):
+    model = Hero
+    template_name = 'game/hero_list.html'
+    context_object_name = 'hero_list'
+    paginate_by = 30
 
 
 # TODO limit max hero limit to 1
@@ -64,7 +69,6 @@ class CreateHeroView(View):
         return render(request, 'game/create_hero.html', {
             'hero_form': hero_form,
             'hero_statistics_form': hero_statistics_form,
-            'hero_pk': 5
         })
     
     def post(self, request, *args, **kwargs):
@@ -87,15 +91,15 @@ class CreateHeroView(View):
                     value=hero_statistics_form.cleaned_data[statistic_name]
                 )
                 hero_statistic.save()
+            #  TODO maybe instead of rendering success redirect to detail hero view
         return render(request, 'game/success.html', {
             'information': 'Hero created',
-            'hero_pk': 5
         })
 
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(hero_created_require, name='dispatch')
-class UpgradeHeroView(FormView, HeroGetPkContextMixin):
+class UpgradeHeroView(FormView):
     statistics = ['strength', 'intelligence', 'agility', 'vitality']
     form_class = HeroStatisticsForm
     context_object_name = 'form'
