@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Heros{% endblock %}
+
+
+{% block content %}
+    {% for hero in hero_list %}
+    <div>
+        <p><a href="{% url 'game:hero_detail' pk=hero.pk %}">{{ hero.name }}</a> - {{ hero.user.username }}</p>
+    </div>
+    {% endfor %}
+{% endblock %}
