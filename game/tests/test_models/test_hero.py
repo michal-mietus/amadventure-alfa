@@ -1,7 +1,6 @@
 from ...models.hero import Hero
 from ...models.item import Item
-from ...models.statistic import HeroStatistic
-from ...models.statistic import ItemStatistic
+from ...models.statistics import HeroMainStatistic, HeroDerivativeStatistic, ItemDerivativeStatistic, ItemMainStatistic
 from .set_ups import UserSetUp
 
 
@@ -14,10 +13,8 @@ class TestHero(UserSetUp):
         )
         self.statistic_properties = {
             'name': 'strength',
-            'parent': None,
-            'multiplier': 1,
             'value': 10,
-            'owner': self.hero
+            'hero': self.hero
         }
 
     def test_valid_create_hero(self):
@@ -40,19 +37,19 @@ class TestHero(UserSetUp):
         )
 
     def test_get_statistic(self):
-        statistic = HeroStatistic.objects.create(**self.statistic_properties)
+        statistic = HeroMainStatistic.objects.create(**self.statistic_properties)
         result = self.hero.get_statistic(self.statistic_properties['name'])
         self.assertEqual(statistic, result)
 
     def test_get_all_statistics(self):
-        statistic = HeroStatistic.objects.create(**self.statistic_properties)
+        statistic = HeroMainStatistic.objects.create(**self.statistic_properties)
         result = self.hero.get_all_statistics()
         self.assertEqual(result[0], statistic)
 
     def test_remove_item_statistic(self):
-        hero_statistic = HeroStatistic(**self.statistic_properties).save()
+        hero_statistic = HeroMainStatistic(**self.statistic_properties).save()
         item = Item.objects.create(name='item', owner=self.hero)
-        item_statistic = ItemStatistic.objects.create(name='strength', value=5, owner=item)
+        item_statistic = ItemMainStatistic.objects.create(name='strength', value=5, item=item)
         hero_statistic_before_remove = self.hero.get_statistic(self.statistic_properties['name'])
         self.hero.remove_item_statistic(item_statistic)
         current_statistic_value = self.hero.get_statistic(self.statistic_properties['name']).value
@@ -60,9 +57,9 @@ class TestHero(UserSetUp):
         self.assertEqual(hero_statistic_difference, item_statistic.value)
 
     def test_add_item_statistic(self):
-        hero_statistic = HeroStatistic(**self.statistic_properties).save()
+        hero_statistic = HeroMainStatistic(**self.statistic_properties).save()
         item = Item.objects.create(name='item', owner=self.hero)
-        item_statistic = ItemStatistic.objects.create(name='strength', value=5, owner=item)
+        item_statistic = ItemMainStatistic.objects.create(name='strength', value=5, item=item)
         hero_statistic_before_remove = self.hero.get_statistic(self.statistic_properties['name'])
         self.hero.add_item_statistic(item_statistic)
         current_statistic_value = self.hero.get_statistic(self.statistic_properties['name']).value
