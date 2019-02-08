@@ -173,6 +173,7 @@ class FightView(View):
         defending_hero = get_object_or_404(Hero, pk=defender_pk)
         attacker = self.Warrior(attacking_hero, defending_hero)
         defender = self.Warrior(defending_hero, attacking_hero)
+        self.check_is_not_fighting_with_yourself(attacking_hero, defending_hero)
         while (attacker.health or defender.health) > 0:
             attacker.hit(defender)
             defender.hit(attacker)
@@ -180,12 +181,10 @@ class FightView(View):
         return winner
 
     def check_is_not_fighting_with_yourself(self, attacking_hero, defending_hero):
-        if attacking_hero == defending_hero:
-            return render(
-                request, 'game/information.html', {
-                    'information': "You can't fight with yourself."
-                }
-            )
+        # TODO idk why isn't it redirecting or rendering new template,
+        # statement is true
+        if attacking_hero.pk == defending_hero.pk:
+            return redirect(reverse_lazy('game:main'))
 
     def choose_winner(self, attacker, defender):
         if attacker.health > defender.health:
