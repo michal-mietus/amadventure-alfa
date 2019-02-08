@@ -1,3 +1,4 @@
+from itertools import chain
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -11,10 +12,16 @@ class Hero(models.Model):
         return repr
 
     def get_statistic(self, name):
-        return self.herostatistic_set.get(name=name)
+        """ Get main or derivative stat """
+        try:
+            statistic = self.heromainstatistic_set.get(name=name)
+        except Exception as e:
+            statistic = self.heroderivativestatistic_set.get(name=name)
+        return statistic
 
     def get_all_statistics(self):
-        return self.herostatistic_set.all()
+        all_statistics = list(chain(self.heromainstatistic_set.all(), self.heroderivativestatistic_set.all()))
+        return all_statistics
 
     def get_all_items(self):
         return self.item_set.all()
