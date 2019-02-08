@@ -18,22 +18,50 @@
         {% block styles %}{% endblock %}
     </head>
     <body>
-        <div class="logo">
-            <img src="https://res.cloudinary.com/hostingsme/image/upload/v1549034221/Amadventure-logo.png">
-        </div>
-        <nav>
-            <div class="container">
-                <div class="row">
-                    {% if user.is_authenticated %}
-                        <div class="home col-sm-3 text-center text-md-left p-2"><a href="{% url 'game:main' %}">Home</a></div>
-                        <div class="hero col-sm-3 text-center text-md-left p-2"><a href="{% url 'game:hero_owned' %}">Hero</a></div>
-                        <div class="locations col-sm-3 text-center text-md-left p-2"><a href="">Locations</a></div>
-                        <div class="sign-out col-sm-3 text-center text-md-left p-2"><a href="{% url 'usersystem:sign_out' %}">Sign out</a></div>
-                    {% else %}
-                        <div class="sign-in col-sm-6 text-center text-md-left p-2"><a href="{% url 'usersystem:sign_in' %}">Sign in</a></div>
-                        <div class="sign-up col-sm-6 text-center text-md-left p-2"><a href="{% url 'usersystem:sign_up' %}">Sign up</a></div>
-                    {% endif %}
+        
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="d-flex flex-column">
+
+                <div class="d-flex">
+                    <div class="p-2 logo">
+                        <img src="https://res.cloudinary.com/hostingsme/image/upload/v1549034221/Amadventure-logo.png">
+                    </div>
+                    <div>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
                 </div>
+
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <ul class="navbar-nav mr-auto mt-2">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'game:main' %}">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'game:hero_owned' %}">Your hero</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'game:hero_list' %}">Heroes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Locations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'usersystem:sign_out' %}">Sign out</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'usersystem:sign_in' %}">Sign in</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'usersystem:sign_up' %}">Sign up</a>
+                            </li>
+                        {% endif %}
+                    </ul> 
+                </div>
+
             </div>
         </nav>
 
