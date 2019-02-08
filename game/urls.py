@@ -12,4 +12,5 @@ urlpatterns = [
     path('heroes/', views.HeroList.as_view(), name='hero_list'),
     path('hero_owned/', views.HeroOwned.as_view(), name='hero_owned'),
     path('hero/<int:pk>/', views.HeroDetail.as_view(), name='hero_detail'),
+    path('hero/fight/<int:defender_pk>', views.FightView.as_view(), name='hero_fight'),
 ]
