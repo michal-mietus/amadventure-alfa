@@ -5,6 +5,10 @@
 
 {% block content %}
     <h2>{{ hero.name }}</h2>
+    <!-- works only if user have only one hero, otherwise its useless-->
+    {% if request.user != hero.user %}
+        <a href="{% url 'game:hero_fight' defender_pk=hero.pk %}">Fight</a>
+    {% endif %}
     {% for statistic in statistics %}
     <p>{{ statistic.name }}: {{ statistic.value }}</p>
     {% endfor %}

@@ -143,3 +143,59 @@ class UpgradeHeroView(FormView):
             value = hero.get_statistic(statistic).value
             initial[statistic] = value
         return initial
+
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(hero_created_require, name='dispatch')
+class FightView(View):
+
+    class Warrior:
+        def __init__(self, hero, enemy_hero):
+            self.hero = hero
+            self.enemy_hero = enemy_hero
+            self.health = hero.get_statistic('health').value
+            self.max_health = hero.get_statistic('health').value
+            self.damage = self.calculate_damage()
+
+        def calculate_damage(self):
+            physical_damage = self.hero.get_statistic('physical_damage').value / self.enemy_hero.get_statistic('defense').value
+            magical_damage = self.hero.get_statistic('magic_attack').value / self.enemy_hero.get_statistic('magic_resist').value
+            return physical_damage + magical_damage
+
+        def hit(self, opponent):
+            opponent.health -= self.damage
+
+    def fight(self, defender_pk):
+        # TODO implement critic and dodge chance
+        # TODO fight result is always the same
+        attacking_hero = Hero.objects.get(user=self.request.user)
+        defending_hero = get_object_or_404(Hero, pk=defender_pk)
+        attacker = self.Warrior(attacking_hero, defending_hero)
+        defender = self.Warrior(defending_hero, attacking_hero)
+        self.check_is_not_fighting_with_yourself(attacking_hero, defending_hero)
+        while (attacker.health or defender.health) > 0:
+            attacker.hit(defender)
+            defender.hit(attacker)
+        winner = self.choose_winner(attacker, defender)
+        return winner
+
+    def check_is_not_fighting_with_yourself(self, attacking_hero, defending_hero):
+        # TODO idk why isn't it redirecting or rendering new template,
+        # statement is true
+        if attacking_hero.pk == defending_hero.pk:
+            return redirect(reverse_lazy('game:main'))
+
+    def choose_winner(self, attacker, defender):
+        if attacker.health > defender.health:
+            return attacker
+        elif attacker.health < defender.health:
+            return defender
+        else:
+            return 'Draw'
+
+    def get(self, request, defender_pk, *args, **kwargs):
+        winner = self.fight(defender_pk)
+        return render(request, 'game/hero_fight.html', {
+            'winner': winner
+        })
