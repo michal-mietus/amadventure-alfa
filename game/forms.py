@@ -1,6 +1,5 @@
 from django import forms
 from .models.hero import Hero
-from .models.statistic import HeroStatistic
 
 
 class HeroForm(forms.ModelForm):
@@ -9,7 +8,7 @@ class HeroForm(forms.ModelForm):
         fields = ['name']
 
 
-class HeroStatisticsForm(forms.Form):
+class MainStatisticsForm(forms.Form):
     strength = forms.IntegerField(min_value=1)
     intelligence = forms.IntegerField(min_value=1)
     agility = forms.IntegerField(min_value=1)
