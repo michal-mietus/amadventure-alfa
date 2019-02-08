@@ -7,10 +7,11 @@ from django.views.generic.edit import FormView, UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from .decorators import hero_created_require, logged_user_redirect_to_main_view, deny_user_create_more_than_one_hero
-from .forms import HeroForm, HeroStatisticsForm
+from .forms import HeroForm, MainStatisticsForm
 from .models.hero import Hero
 from .models.item import Item
-from .models.statistic import HeroStatistic
+from .models.statistics import HeroMainStatistic, HeroDerivativeStatistic
+from .statistic_properties import main_statistics, derivative_statistics
 
 
 @method_decorator(logged_user_redirect_to_main_view, name='dispatch')
@@ -35,6 +36,7 @@ class HeroOwned(TemplateView):
         context['statistics'] = hero.get_all_statistics()
         return context
 
+    # TODO add option to delete user
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(hero_created_require, name='dispatch')
@@ -57,6 +59,9 @@ class HeroList(ListView):
     template_name = 'game/hero_list.html'
     context_object_name = 'hero_list'
     paginate_by = 30
+    
+    class Meta:
+        ordering = '-name'
 
 
 # TODO limit max hero limit to 1
@@ -65,43 +70,54 @@ class HeroList(ListView):
 class CreateHeroView(View):
     def get(self, request, *args, **kwargs):
         hero_form = HeroForm()
-        hero_statistics_form = HeroStatisticsForm()
+        hero_statistics_form = MainStatisticsForm()
         return render(request, 'game/create_hero.html', {
             'hero_form': hero_form,
             'hero_statistics_form': hero_statistics_form,
         })
     
     def post(self, request, *args, **kwargs):
-        statistics = ['strength', 'intelligence', 'agility', 'vitality']
         hero_form = HeroForm(request.POST)
-        hero_statistics_form = HeroStatisticsForm(request.POST)
+        hero_statistics_form = MainStatisticsForm(request.POST)
         if all([hero_form.is_valid(), hero_statistics_form.is_valid()]):
-            user = User.objects.get(pk=request.user.pk)
-            hero = Hero(
-                name = hero_form.cleaned_data['name'],
-                user = user
+            hero = Hero.objects.create(
+                name=hero_form.cleaned_data['name'],
+                user=self.request.user
             )
-            hero.save()
-            hero = Hero.objects.filter(user=request.user)[0] # reload
+            self.create_hero_statistics(hero, hero_statistics_form)
 
-            for statistic_name in statistics:
-                hero_statistic = HeroStatistic(
-                    name=statistic_name,
-                    owner=hero,
-                    value=hero_statistics_form.cleaned_data[statistic_name]
-                )
-                hero_statistic.save()
             #  TODO maybe instead of rendering success redirect to detail hero view
-        return render(request, 'game/success.html', {
-            'information': 'Hero created',
-        })
+            return render(request, 'game/success.html', {
+                'information': 'Hero created',
+            })
+
+    def create_hero_statistics(self, hero, statistics_form):
+        for parent_statistic in main_statistics:
+            main_statistic = HeroMainStatistic.objects.create(
+                name=parent_statistic['name'],
+                hero=hero,
+                value=statistics_form.cleaned_data[parent_statistic['name']]
+            )
+            self.create_derivative_statistics(main_statistic, hero)
+            
+    def create_derivative_statistics(self, parent, hero):
+        for derivative_statistic in derivative_statistics:
+            if derivative_statistic['parent_name'] == parent.name:
+                hero_statistic = HeroDerivativeStatistic.objects.create(
+                    name=derivative_statistic['name'],
+                    hero=hero,
+                    parent=parent,
+                    multiplier=derivative_statistic['multiplier'],
+                    value=1, # have to pass any value to calculate later
+                )
+                hero_statistic.calculate_and_save_value()
 
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(hero_created_require, name='dispatch')
 class UpgradeHeroView(FormView):
     statistics = ['strength', 'intelligence', 'agility', 'vitality']
-    form_class = HeroStatisticsForm
+    form_class = MainStatisticsForm
     context_object_name = 'form'
     template_name = 'game/upgrade_hero.html'
     success_url = reverse_lazy('game:main')
@@ -112,7 +128,13 @@ class UpgradeHeroView(FormView):
             hero_statistic = hero.get_statistic(statistic_name)
             hero_statistic.value = form.cleaned_data[statistic_name]
             hero_statistic.save()
+            self.calculate_new_derivative_statistic_values(hero_statistic)
+            
         return super().form_valid(form)
+
+    def calculate_new_derivative_statistic_values(self, hero_main_statistic):
+        for derivative_statistic in hero_main_statistic.get_all_derivative_statistics():
+            derivative_statistic.calculate_and_save_value()
 
     def get_initial(self):
         hero = get_object_or_404(Hero, user=self.request.user)
