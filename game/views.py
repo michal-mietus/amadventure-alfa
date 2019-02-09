@@ -1,3 +1,4 @@
+from random import randrange
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
@@ -156,23 +157,30 @@ class FightView(View):
             self.enemy_hero = enemy_hero
             self.health = hero.get_statistic('health').value
             self.max_health = hero.get_statistic('health').value
-            self.damage = self.calculate_damage()
 
         def calculate_damage(self):
-            physical_damage = self.hero.get_statistic('physical_damage').value / self.enemy_hero.get_statistic('defense').value
-            magical_damage = self.hero.get_statistic('magic_attack').value / self.enemy_hero.get_statistic('magic_resist').value
+            enemy_defense = self.enemy_hero.get_statistic('defense').value
+            enemy_magic_resist = self.enemy_hero.get_statistic('magic_resist').value
+
+            random_defense_points = randrange(0, enemy_defense // 10)
+            random_magic_resist_points = randrange(0, enemy_defense // 10)
+            physical_damage = self.hero.get_statistic('physical_damage').value / (enemy_defense + random_defense_points)
+            magical_damage = self.hero.get_statistic('magic_attack').value / (enemy_magic_resist + random_magic_resist_points)
             return physical_damage + magical_damage
 
         def hit(self, opponent):
-            opponent.health -= self.damage
+            # can't assign it in __init__ because it have to change every time
+            damage = self.calculate_damage()
+            opponent.health -= damage
 
     def fight(self, attacking_hero, defending_hero):
         # TODO implement critic and dodge chance
-        # TODO fight result is always the same
+        # TODO fight result is always the same (check random defense points)
+        # TODO winner have minus health
 
         attacker = self.Warrior(attacking_hero, defending_hero)
         defender = self.Warrior(defending_hero, attacking_hero)
-        while (attacker.health or defender.health) > 0:
+        while (attacker.health and defender.health) > 0:
             attacker.hit(defender)
             defender.hit(attacker)
         winner = self.choose_winner(attacker, defender)
