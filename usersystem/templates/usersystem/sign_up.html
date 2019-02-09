@@ -5,13 +5,24 @@
 
 {% block styles %}
 <link rel="stylesheet" type="text/css" href="{% static 'usersystem/styles/forms.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'usersystem/styles/not_logged_nav.css' %}">
 {% endblock %}
 
 {% block content %}
     <form method="POST" action="{% url 'usersystem:sign_up' %}">
         {% csrf_token %}
-        {{ form }}
+        {{ form.non_field_errors }}
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            {{ field.label_tag }}
+            {{ field }}
+
+            {{ field.errors }}
+            
+        {% endfor %}
         <input type="submit" value="Sign up">
     </form>
 {% endblock %}
