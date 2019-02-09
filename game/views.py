@@ -1,3 +1,4 @@
+import math
 from random import randrange
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -162,8 +163,8 @@ class FightView(View):
             enemy_defense = self.enemy_hero.get_statistic('defense').value
             enemy_magic_resist = self.enemy_hero.get_statistic('magic_resist').value
 
-            random_defense_points = randrange(0, enemy_defense // 10)
-            random_magic_resist_points = randrange(0, enemy_defense // 10)
+            random_defense_points = randrange(0, math.ceil(enemy_defense // 10))
+            random_magic_resist_points = randrange(0, math.ceil(enemy_defense // 10))
             physical_damage = self.hero.get_statistic('physical_damage').value / (enemy_defense + random_defense_points)
             magical_damage = self.hero.get_statistic('magic_attack').value / (enemy_magic_resist + random_magic_resist_points)
             return physical_damage + magical_damage
