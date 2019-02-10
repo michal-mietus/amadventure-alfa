@@ -8,7 +8,7 @@ from django.views.generic.base import ContextMixin, View
 from django.views.generic.edit import FormView, UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .decorators import hero_created_require, logged_user_redirect_to_main_view, deny_user_create_more_than_one_hero
+from .decorators import hero_created_require, deny_user_create_more_than_one_hero
 from .forms import HeroForm, MainStatisticsForm
 from .models.hero import Hero
 from .models.item import Item
@@ -16,14 +16,8 @@ from .models.statistics import HeroMainStatistic, HeroDerivativeStatistic
 from .statistic_properties import main_statistics, derivative_statistics
 
 
-@method_decorator(logged_user_redirect_to_main_view, name='dispatch')
 class WelcomeView(TemplateView):
     template_name = 'game/amadventure.html'
-
-
-@method_decorator(login_required, name='dispatch')
-class MainView(TemplateView):
-    template_name = 'game/main.html'
 
 
 @method_decorator(login_required, name='dispatch')
