@@ -11,14 +11,6 @@ def hero_created_require(function):
     return wrapper
 
 
-def logged_user_redirect_to_main_view(function):
-    def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect(reverse('game:main'))
-        return function(request, *args, **kwargs)
-    return wrapper
-
-
 def deny_user_create_more_than_one_hero(function):
     def wrapper(request, *args, **kwargs):
         hero = Hero.objects.filter(user=request.user)
