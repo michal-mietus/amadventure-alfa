@@ -51,7 +51,7 @@ class TestMainView(UserSetUp):
         self.assertTemplateUsed('main.html')
     
 
-class TestHeroCreateView(UserAndHeroSetUp):
+class TestCreateHeroView(UserAndHeroSetUp):
     def setUp(self):
         super().setUp()
         self.app_name = 'game'
