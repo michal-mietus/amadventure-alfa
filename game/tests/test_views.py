@@ -16,7 +16,7 @@ class UserSetUp(TestCase):
         self.password = 'password'
         self.user = User.objects.create_user(
             username=self.username,
-            password=self.password
+            password=self.password,
         )
         self.client = Client()
         self.factory = RequestFactory()
@@ -192,6 +192,15 @@ class TestUpgradeHeroView(UserSetUp):
             name='hero_name',
             user=self.user
         )
+
+
+class TestHeroDetailView(UserAndHeroSetUp):
+    def test_returned_context_data(self):
+        factory = RequestFactory()
+        request = factory.get(reverse('game:hero_detail', kwargs={'pk': self.hero.pk}))
+        request.user = self.user
+        response = views.HeroDetail.as_view()(request, pk=self.hero.pk)
+        self.assertQuerysetEqual(response.context_data['statistics'], self.hero.get_all_statistics())
 
 
 class TestHeroOwnedView(UserSetUp):
