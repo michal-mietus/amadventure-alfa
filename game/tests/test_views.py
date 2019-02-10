@@ -40,12 +40,7 @@ class TestMainView(UserSetUp):
         self.app_name = 'game'
         self.url_name = 'main'
 
-    def test_prevent_logged_user_access_main(self):
-        url = self.app_name + ':' + self.url_name
-        response = self.client.get(reverse(url))
-        self.assertRedirects(response, '/user/sign_in/?next=/main/')
-
-    def test_allow_logged_user_access_main(self):
+    def test_access_main(self):
         self.login_user()
         url = self.app_name + ':' + self.url_name
         response = self.client.get(reverse(url))
