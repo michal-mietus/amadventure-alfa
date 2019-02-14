@@ -1,4 +1,3 @@
-
 nav {
     margin-bottom: 30px;
 }
@@ -10,4 +9,8 @@ nav {
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+.delete {
+    color: red;
 }
