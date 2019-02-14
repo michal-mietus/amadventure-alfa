@@ -3,13 +3,13 @@ from random import randrange
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
-from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic import TemplateView, DetailView, ListView, DeleteView
 from django.views.generic.base import ContextMixin, View
 from django.views.generic.edit import FormView, UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .decorators import hero_created_require, deny_user_create_more_than_one_hero
-from .forms import HeroForm, MainStatisticsForm
+from .decorators import hero_created_require, deny_user_create_more_than_one_hero, delete_only_owned_heroes
+from .forms import HeroForm, HeroDeleteForm, MainStatisticsForm
 from .models.hero import Hero
 from .models.item import Item
 from .models.statistics import HeroMainStatistic, HeroDerivativeStatistic
@@ -83,9 +83,10 @@ class CreateHeroView(View):
             self.create_hero_statistics(hero, hero_statistics_form)
 
             #  TODO maybe instead of rendering success redirect to detail hero view
-            return render(request, 'game/success.html', {
-                'information': 'Hero created',
-            })
+            #return render(request, 'game/success.html', {
+            #    'information': 'Hero created',
+            #})
+            return redirect(reverse('game:hero_owned'))
 
     def create_hero_statistics(self, hero, statistics_form):
         for parent_statistic in main_statistics:
@@ -140,6 +141,32 @@ class UpgradeHeroView(FormView):
             initial[statistic] = value
         return initial
 
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(hero_created_require, name='dispatch')
+@method_decorator(delete_only_owned_heroes, name='dispatch')
+class HeroDeleteView(FormView):
+    template_name = 'game/hero_delete.html'
+    form_class = HeroDeleteForm
+    success_url = reverse_lazy('game:create_hero')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['hero'] = Hero.objects.get(pk=self.kwargs['pk'])
+        return context
+
+    def form_valid(self, form):
+        hero = Hero.objects.get(pk=self.kwargs['pk'])
+        if form.cleaned_data['hero_name'] == hero.name:
+            hero.delete()
+            return super().form_valid(form)
+        else:
+            error = 'Hero name is invalid'
+            return render(self.request, 'game/hero_delete.html', {
+                'form': form,
+                'error': error,
+                'hero': hero,
+            })
 
 
 @method_decorator(login_required, name='dispatch')

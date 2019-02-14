@@ -51,7 +51,7 @@ class TestMainView(UserSetUp):
         self.assertTemplateUsed('main.html')
     
 
-class TestHeroCreateView(UserAndHeroSetUp):
+class TestCreateHeroView(UserAndHeroSetUp):
     def setUp(self):
         super().setUp()
         self.app_name = 'game'
@@ -61,7 +61,8 @@ class TestHeroCreateView(UserAndHeroSetUp):
 
     def test_prevent_logged_user_access_create_hero_view(self):
         response = self.client.get(reverse(self.url))
-        self.assertRedirects(response, '/user/sign_in/?next=/create_hero/')
+        redirect_url = reverse('usersystem:sign_in') + '?next=' + reverse(self.url)
+        self.assertRedirects(response, redirect_url)
 
     def test_allow_logged_user_access_create_hero_view(self):
         self.login_user()
@@ -113,7 +114,8 @@ class TestUpgradeHeroView(UserSetUp):
     
     def test_prevent_logged_user_access_upgrade_view(self):
         response = self.client.get(reverse(self.url))
-        self.assertRedirects(response, '/user/sign_in/?next=/upgrade_hero/')
+        url =  reverse('usersystem:sign_in') + '?next=' + reverse('game:upgrade_hero')
+        self.assertRedirects(response, url)
 
     def test_allow_logged_user_access_upgrade_view(self):
         self.login_user()
