@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete hero - {{ hero.name }}{% endblock %}
+
+{% block content %}
+    <h2>Delete {{ hero.name }}</h2>
+    <!-- Error when user try to delete someone else hero -->
+    <p class="delete">{{ error }}</p>
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Delete">
+    </form>
+    
+{% endblock %}
