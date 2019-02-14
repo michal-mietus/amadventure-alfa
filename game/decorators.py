@@ -20,3 +20,15 @@ def deny_user_create_more_than_one_hero(function):
             return redirect(reverse_lazy('game:main'))
         return function(request, *args, **kwargs)
     return wrapper
+
+
+def delete_only_owned_heroes(function):
+    def wrapper(request, *args, **kwargs):
+        hero = Hero.objects.get(pk=kwargs['pk'])
+        if request.user != hero.user:
+            return render(request, 'game/hero_detail.html', {
+                'error': "You can't delete not your hero.",
+                'hero': hero,
+            })
+        return function(request, *args, **kwargs)
+    return wrapper
