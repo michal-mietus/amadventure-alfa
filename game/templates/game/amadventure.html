@@ -10,7 +10,6 @@
 
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{% static '/game/styles/slideshow.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static '/usersystem/styles/not_logged_nav.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -31,14 +30,14 @@
     <img src="{% static '/images/exit.jpg' %}" style="width:100%">
     <div class="text">Caption Three</div>
   </div>
-  </div>
-  <br>
+</div>
+<br>
 
-  <!-- The dots/circles -->
-  <div style="text-align:center">
-    <span class="dot" onclick="currentSlide(1)"></span>
-    <span class="dot" onclick="currentSlide(2)"></span>
-    <span class="dot" onclick="currentSlide(3)"></span>
-  </div> 
+<!-- The dots/circles -->
+<div style="text-align:center">
+  <span class="dot" onclick="currentSlide(1)"></span>
+  <span class="dot" onclick="currentSlide(2)"></span>
+  <span class="dot" onclick="currentSlide(3)"></span>
+</div> 
 
 {% endblock %}
