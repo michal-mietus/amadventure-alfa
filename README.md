@@ -1,4 +1,5 @@
-![](https://i.ibb.co/2MND6KD/Amadventure-logo.png) # Amadventure
+![](https://i.ibb.co/2MND6KD/Amadventure-logo.png) 
+# Amadventure
 Browser game.
 
 Amadventure it's about your hero who must face with monsters, 
