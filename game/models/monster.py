@@ -11,9 +11,10 @@ class Monster(models.Model):
         repr = self.name
         return repr
 
+    # TODO unfinished method!
     def create_statistics(self):
         statistic_points = level * self.location.difficulty
         for i in range(statistic_points):
             pass
-            
+
 
