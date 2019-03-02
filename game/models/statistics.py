@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .hero import Hero
 from .item import Item
+from .monster import Monster
 
 
 class MainStatistic(models.Model):
@@ -26,6 +27,10 @@ class HeroMainStatistic(MainStatistic):
 
 class ItemMainStatistic(MainStatistic):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+
+class MonsterMainStatistic(MainStatistic):
+    monster = models.ForeignKey(Monster, on_delete=models.CASCADE)
 
 
 class DerivativeStatistic(models.Model):
@@ -56,3 +61,8 @@ class HeroDerivativeStatistic(DerivativeStatistic):
 class ItemDerivativeStatistic(DerivativeStatistic):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     parent = models.ForeignKey(ItemMainStatistic, on_delete=models.CASCADE)
+
+
+class MonsterDerivativeStatistic(DerivativeStatistic):
+    monster = models.ForeignKey(Monster, on_delete=models.CASCADE)
+    parent = models.ForeignKey(MonsterMainStatistic, on_delete=models.CASCADE)
