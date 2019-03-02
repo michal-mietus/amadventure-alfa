@@ -5,6 +5,9 @@ Browser game.
 Amadventure it's about your hero who must face with monsters, 
 perform the quest entrusted to him, fight with other heroes and many more!
 
+## Status
+In progress.
+
 ## Technlogies
 * Python 3.6.7
 * Django 2.1.5
