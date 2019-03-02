@@ -17,7 +17,7 @@ In progress.
   * login
   * register
 * hero system
-  * creating hero
+  * creating
   * updating
   * statistics
 * fight between heroes
