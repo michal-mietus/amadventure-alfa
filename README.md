@@ -23,7 +23,7 @@ In progress.
 * fight between heroes
 
 #### To do
-* monsters
+* opponents
 * locations
 * items
 * scaling opponents
